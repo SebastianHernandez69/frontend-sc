@@ -1,15 +1,34 @@
 import React from "react";
 import Navbar from "@/components/navBar";
+import Header from "@/components/sidebar/header";
+import HeaderMobile from "@/components/sidebar/header-mobile";
+import SideNav from "@/components/sidebar/side-nav";
+import PageWrapper from "@/components/sidebar/page-wrapper";
+import MarginWidthWrapper from "@/components/sidebar/margin-width-wrapper";
 
 export default function ProfileLayout({
     children,
-}: Readonly<{
-    children: React.ReactNode
-}>){
-    return(
-        <>    
-            <Navbar></Navbar>
-            <main>{children}</main>
+}: {
+    children: React.ReactNode;
+}) {
+
+    return (
+        <>   
+
+            <div className="flex">
+                <SideNav/>
+                <main className="flex-1">
+                    <MarginWidthWrapper>
+                        <Header/>
+                        <HeaderMobile/>
+                        <PageWrapper>{children}</PageWrapper>
+                    </MarginWidthWrapper>
+                </main>
+            </div>
+            
         </>
-    )
+    );
 }
+
+    
+    
