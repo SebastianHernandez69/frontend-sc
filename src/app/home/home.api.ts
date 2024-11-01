@@ -2,7 +2,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 // Obtener preguntas pupilo
 export async function getQuestionsPupilo(){
-    const access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjksInVzZXJuYW1lIjo5LCJyb2wiOjIsImlhdCI6MTczMDM5NzkzOCwiZXhwIjoxNzMwNDAxNTM4fQ.yPznEOqn4rxsVbr2qUtIwzxkJn2YGkwv0Yp3Bo0kcxE";
+    const access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjksInVzZXJuYW1lIjo5LCJyb2wiOjIsImlhdCI6MTczMDQzMjg4NywiZXhwIjoxNzMwNDM2NDg3fQ.hrlOrJ2YRlYvVy81mvNGvL0a8jRDGLHuabj51YpawW4";
 
     const data = await fetch(`${apiUrl}/user/preguntas`,{
         method: "GET",

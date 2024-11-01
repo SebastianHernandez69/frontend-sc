@@ -6,6 +6,8 @@ export default function Home() {
     <div>
       Landing
       <Link className={buttonVariants()} href={"/home"}>Home</Link>
+      <Link className={buttonVariants()} href={"/profile"}>Login</Link>
+      <Link className={buttonVariants()} href={"/auth/register"}>Register</Link>
     </div>
   );
 }

@@ -86,7 +86,7 @@ export default function FormQuestion(){
             console.log(`${pair[0]}: ${pair[1]}`);
         }
         //JWT
-        const access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjksInVzZXJuYW1lIjo5LCJyb2wiOjIsImlhdCI6MTczMDM0NjQwNSwiZXhwIjoxNzMwMzUwMDA1fQ.rN_0u4vedMc4tdusZKCAmKjMqT7XXoJCtUzaOp-Wqc0";
+        const access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjksInVzZXJuYW1lIjo5LCJyb2wiOjIsImlhdCI6MTczMDQzMjg4NywiZXhwIjoxNzMwNDM2NDg3fQ.hrlOrJ2YRlYvVy81mvNGvL0a8jRDGLHuabj51YpawW4";
 
         try {
             const res = await fetch(`${apiUrl}/user/pregunta/add`, {
