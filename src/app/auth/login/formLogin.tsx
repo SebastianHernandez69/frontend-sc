@@ -7,7 +7,6 @@ import {z} from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 
-
 const loginSchema = z.object({
     correo: z
       .string()
@@ -52,14 +51,14 @@ export default function FormLogin() {
     
           const responseData = await res.json();
           const access_token = responseData.access_token;
-          localStorage.setItem("access_token", access_token);
+          sessionStorage.setItem("access_token", access_token);
+          router.refresh();
           router.push("/home");
         } catch (error) {
           console.error("Error en la solicitud:", error);
         }
       };
     
-
       return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
           <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-md bg-white p-6 rounded-lg shadow-md space-y-4">

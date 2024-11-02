@@ -1,10 +1,21 @@
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+const access_token = typeof window !== "undefined" ? sessionStorage.getItem('access_token') : null;
 
 // Obtener preguntas pupilo
-export async function getQuestionsPupilo(){
-    const access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjksInVzZXJuYW1lIjo5LCJyb2wiOjIsImlhdCI6MTczMDQzMjg4NywiZXhwIjoxNzMwNDM2NDg3fQ.hrlOrJ2YRlYvVy81mvNGvL0a8jRDGLHuabj51YpawW4";
-
+export async function getQuestionsPupilo(){    
     const data = await fetch(`${apiUrl}/user/preguntas`,{
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${access_token}`,
+            "Content-Type": "application/json"
+        }
+    });
+
+    return await data.json();
+}
+
+export async function getQuestionsByTutorInteres() {
+    const data = await fetch(`${apiUrl}/user/pregunta/interes-tutor`, {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${access_token}`,

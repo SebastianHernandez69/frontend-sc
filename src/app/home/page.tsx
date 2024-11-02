@@ -1,55 +1,92 @@
 "use client"
 
+import { jwtDecode } from 'jwt-decode';
 import { useEffect, useState } from "react";
-import { getQuestionsPupilo } from "./home.api";
+import { getQuestionsPupilo, getQuestionsByTutorInteres } from "./home.api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 import { DialogOverlay, DialogPortal } from "@radix-ui/react-dialog";
 import { DialogHeader } from "@/components/ui/dialog";
 import Carousel from "@/components/ui/carousel";
-
-interface Question{
-    idPregunta: number;
-    idUsuarioPupilo: number;
-    titulo: string;
-    descripcion: string;
-    fechaPublicacion: any;
-    materia: {
-        materia: string
-    };
-    imgpregunta:{
-        img: string
-    }[];
-}
+import { Question } from "./interfaces/question-interface";
+import { userPayload } from "./interfaces/userPayload-int";
+import QuestionOffers from './offers/questionOffers';
 
 export default function homePage(){
     
     const [isOpen, setIsOpen] = useState(false);
     const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
     const [questions, setQuestions] = useState<Question[]>([]);;
-
-    //
-    useEffect(() => {
-        const fetchQuestions = async () => {
-          try {
-            const data: Question[] = await getQuestionsPupilo();
-            setQuestions(data);
-          } catch (error) {
-            console.error("Error al obtener preguntas:", error);
-          }
-        };
+    const [userData, setUserData] = useState<userPayload | null>(null)
+    const [token, setToken] = useState<string | null>(null);
     
-        fetchQuestions();
+    const fetchQuestions = async (role: number) => {
+        try {
+            let data: Question[] = [];
+            if (role === 2) {
+                data = await getQuestionsPupilo();
+            } else if (role === 1) {
+                data = await getQuestionsByTutorInteres();
+            }
+            setQuestions(data);
+        } catch (error) {
+            console.error("Error al obtener preguntas:", error);
+        }
+    };
+    
+    // refrescar
+    const updateQuestions = async () => {
+        if (userData) {
+            await fetchQuestions(userData.rol);
+        }
+    };
+
+    useEffect(() => {
+        const storedToken = sessionStorage.getItem('access_token');
+        setToken(storedToken);
+
+        const handleStorageChange = () => {
+            const newToken = sessionStorage.getItem('access_token');
+            setToken(newToken);
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
     }, []);
+
+    useEffect(() => {
+        if (token) {
+            const decoded = jwtDecode<userPayload>(token);
+            setUserData(decoded);
+        } else {
+            setUserData(null);
+        }
+    }, [token]);
+
+    useEffect(() => {
+        if (userData) {
+            fetchQuestions(userData.rol);
+        }
+    }, [userData]);
 
     const handleCardClick = (question: any) => {
         setSelectedQuestion(question);
+        console.log("question: "+selectedQuestion);
+        console.log(selectedQuestion?.ofertaresolucion);
         setIsOpen(true);
-    }
-
+    };
     return (
-        <>
-            <div className="flex justify-center p-4 text-2xl">TUS PREGUNTAS</div>
+        <>  
+            {userData?.rol === 1 && (
+                <div className="flex justify-center p-4 text-2xl">PREGUNTAS RECOMENDADAS</div>
+            )}
+            {userData?.rol === 2 && (
+                <div className="flex justify-center p-4 text-2xl">TUS PREGUNTAS</div>
+            )}
+ 
             {/* CARD */}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 justify-center">
@@ -81,11 +118,11 @@ export default function homePage(){
                 <DialogOverlay className="fixed inset-0 bg-black bg-opacity-50" />
                     <DialogContent
                         className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 max-w-[80vh] rounded-xl sm:max-w-2xl w-full
-                            outline-none max-h-[90vh] sm:max-h-[90vh] overflow-y-scroll
+                            outline-none max-h-[90vh] sm:max-h-[85vh] overflow-y-scroll
                         }`}
                         >
                         <DialogHeader>
-                            <DialogTitle className="font-bold">{selectedQuestion?.titulo}</DialogTitle>
+                            <DialogTitle className="font-bold text-center">{selectedQuestion?.titulo}</DialogTitle>
                                 <div className="w-full border"></div>
                             <DialogDescription className="text-justify">{selectedQuestion?.descripcion}</DialogDescription>
                         </DialogHeader>
@@ -100,6 +137,8 @@ export default function homePage(){
                         <p className="text-sm">
                             Fecha de publicación: {new Date(selectedQuestion?.fechaPublicacion).toLocaleString()}
                         </p>
+                        <div className="w-full border my-2"></div>
+                        <QuestionOffers userData={userData} selectedQuestion={selectedQuestion} updateQuestions={updateQuestions}></QuestionOffers>
                     </DialogContent>
                 </DialogPortal>
             </Dialog>

@@ -86,7 +86,13 @@ export default function FormQuestion(){
             console.log(`${pair[0]}: ${pair[1]}`);
         }
         //JWT
-        const access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjksInVzZXJuYW1lIjo5LCJyb2wiOjIsImlhdCI6MTczMDQzMjg4NywiZXhwIjoxNzMwNDM2NDg3fQ.hrlOrJ2YRlYvVy81mvNGvL0a8jRDGLHuabj51YpawW4";
+
+        const access_token = sessionStorage.getItem("access_token");
+
+        if (!access_token) {
+            console.error("Token de autenticación no encontrado.");
+            return; 
+        }
 
         try {
             const res = await fetch(`${apiUrl}/user/pregunta/add`, {
@@ -104,7 +110,7 @@ export default function FormQuestion(){
             // const resData = await res.json();
             // console.log("Respuesta: ",resData);
             
-            router.push('/');
+            router.push('/home');
             router.refresh();
 
             reset();
@@ -148,9 +154,14 @@ export default function FormQuestion(){
                         id="MateriaSelect"
                         className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         value={selectedMateria ?? ''}
-                        //onChange={(e) => setSelectedMateria(Number(e.target.value) || null)}
-                        disabled = {!selectedCategory}
-                        {...register("idMateria" , {required: true})}
+                        disabled={!selectedCategory}
+                        {...register("idMateria", {
+                            required: true,
+                            onChange: (e) => {
+                                const value = Number(e.target.value) || null;
+                                setSelectedMateria(value); // Actualiza el estado
+                            }
+                        })}
                     >
                         {
                             materias.map(materia => (

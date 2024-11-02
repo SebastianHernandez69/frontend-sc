@@ -5,6 +5,8 @@ import HeaderMobile from "@/components/sidebar/header-mobile";
 import SideNav from "@/components/sidebar/side-nav";
 import PageWrapper from "@/components/sidebar/page-wrapper";
 import MarginWidthWrapper from "@/components/sidebar/margin-width-wrapper";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ProfileLayout({
     children,
@@ -14,18 +16,18 @@ export default function ProfileLayout({
 
     return (
         <>   
-
             <div className="flex">
-                <SideNav/>
+                <SideNav />
                 <main className="flex-1">
                     <MarginWidthWrapper>
                         <Header/>
                         <HeaderMobile/>
-                        <PageWrapper>{children}</PageWrapper>
+                        <PageWrapper>{children}
+                        <ToastContainer />
+                        </PageWrapper>
                     </MarginWidthWrapper>
                 </main>
-            </div>
-            
+            </div>    
         </>
     );
 }

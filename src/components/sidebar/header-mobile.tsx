@@ -1,14 +1,21 @@
-'use client';
+"use client";
 
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
-
+import { jwtDecode } from 'jwt-decode';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
-import { SIDENAV_ITEMS } from '@/constants';
+import { SIDENAV_ITEMS, SIDENAV_PUPIL_ITEMS } from '@/constants';
 import { SideNavItem, MenuItemWithSubMenuProps } from '@/types';
 import { Icon } from '@iconify/react';
 import { motion, useCycle } from 'framer-motion';
+
+interface userPayload {
+  sub: number;
+  username: string;
+  rol: number;
+  iat: number;
+  exp: number;
+}
 
 const sidebar = {
     open: (height = 1000) => ({
@@ -30,11 +37,22 @@ const sidebar = {
   };
 
 const HeaderMobile = () =>{
-
+    const [userData, setUserData] = useState<userPayload | null>(null);
     const pathname = usePathname();
     const containerRef = useRef(null);
     const { height } = useDimensions(containerRef);
     const [isOpen, toggleOpen] = useCycle(false, true);
+
+    useEffect(() => {
+      const token = sessionStorage.getItem('access_token');
+
+      if(token) {
+        const decoded = jwtDecode<userPayload>(token);
+        setUserData(decoded);
+      }
+    }, []);
+
+    const sideNavItem = userData?.rol === 1 ? SIDENAV_ITEMS : SIDENAV_PUPIL_ITEMS;
 
     return (
         <motion.nav
@@ -55,7 +73,7 @@ const HeaderMobile = () =>{
                 variants={variants}
                 className="absolute grid w-full gap-3 px-10 py-16 max-h-screen overflow-y-auto"
             >
-                {SIDENAV_ITEMS.map((item, idx)=> {
+                {sideNavItem.map((item, idx)=> {
                     const isLastItem = idx === SIDENAV_ITEMS.length - 1;
                     return (<div key={idx}>
                         {item.submenu ? (

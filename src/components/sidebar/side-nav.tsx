@@ -1,15 +1,39 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
+import { jwtDecode } from 'jwt-decode';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { SIDENAV_ITEMS } from '@/constants';
+
+import { SIDENAV_ITEMS,SIDENAV_PUPIL_ITEMS } from '@/constants';
 import { SideNavItem } from '@/types';
 import { Icon } from '@iconify/react';
 
+
+
+interface userPayload {
+  sub: number;
+  username: string;
+  rol: number;
+  iat: number;
+  exp: number;
+}
+
 const SideNav = () => {
+  
+  const [userData, setUserData] = useState<userPayload | null>(null);
+
+  useEffect(()=>{
+    const token = sessionStorage.getItem('access_token');
+
+    if(token) {
+      const decoded = jwtDecode<userPayload>(token);
+      setUserData(decoded);
+    }
+  }, []);
+
+  const sideNavItem = userData?.rol === 1 ? SIDENAV_ITEMS : SIDENAV_PUPIL_ITEMS;
     return (
         <div className="md:w-60 bg-white h-screen flex-1 fixed hidden md:flex">
             <div className="flex flex-col space-y-6 w-full bg-blue-500 text-white">
@@ -22,7 +46,7 @@ const SideNav = () => {
                 </Link>
 
                 <div className="flex flex-col space-y-2  md:px-6">
-                {SIDENAV_ITEMS.map((item, idx) => {
+                {sideNavItem.map((item, idx) => {
                     return <MenuItem key={idx} item={item} />;
                 })}
                 </div>
