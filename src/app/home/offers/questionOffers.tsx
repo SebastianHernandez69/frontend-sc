@@ -1,6 +1,7 @@
 import React from 'react';
 import FormOferta from './formOffer';
 import OfferCard from './card-oferta';
+import { Offer } from '../interfaces/oferta';
 
 // Define las interfaces para los datos de usuario y oferta
 interface Usuario {
@@ -12,25 +13,18 @@ interface Usuario {
     };
 }
 
-interface Oferta {
-    idOferta: number;
-    descripcion: string;
-    fechaOferta: string;
-    usuario: Usuario;
-}
-
 interface QuestionOffersProps {
     userData: { rol: number } | null;
     selectedQuestion: {
         idPregunta: number;
-        ofertaresolucion?: Oferta[];
+        ofertaresolucion?: Offer[];
     } | null;
     updateQuestions: () => void;
 }
 
 interface OfferSectionProps {
     title: string;
-    offers: Oferta[];
+    offers: Offer[];
 }
 
 const OfferSection: React.FC<OfferSectionProps> = ({ title, offers }) => (
@@ -41,12 +35,8 @@ const OfferSection: React.FC<OfferSectionProps> = ({ title, offers }) => (
             <div className='w-full'>
                 {offers.map((oferta) => (
                     <OfferCard 
-                        key={oferta.idOferta} 
-                        idOferta={oferta.idOferta}
-                        imgTutor={oferta.usuario.fotoPerfil}
-                        name={`${oferta.usuario.nombre.primerNombre} ${oferta.usuario.nombre.primerApellido}`}
-                        description={oferta.descripcion}
-                        fechaOferta={oferta.fechaOferta}
+                        key={oferta.idOferta}
+                        offer={oferta}
                     />
                 ))}
             </div>

@@ -12,7 +12,10 @@ export interface Question{
     }[];
     ofertaresolucion?: {
         idOferta: number,
-        idEstadoOferta: number,
+        idEstadoOferta: {
+            idEstadoOferta: number;
+            estadoOferta: string;
+        },
         idPregunta: number,
         descripcion: string,
         fechaOferta: any,
@@ -26,3 +29,5 @@ export interface Question{
         }
     }[];
 }
+
+type ofertareSolucion = Pick<Question, "ofertaresolucion">;

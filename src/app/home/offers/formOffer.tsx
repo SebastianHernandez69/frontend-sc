@@ -1,10 +1,10 @@
 "use client"
 
 import { Input } from "@/components/ui/input";
-import { Offer } from "../interfaces/oferta";
+import { OfferCreate } from "../interfaces/oferta";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import React from "react";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
@@ -17,7 +17,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const FormOferta: React.FC<newOfferProps> = ({idPregunta, updateQuestions}) => {
 
-    const {register, handleSubmit, reset} = useForm<Offer>();
+    const {register, handleSubmit, reset} = useForm<OfferCreate>();
     const router = useRouter();
 
     const alertOfferDuplicade = () => {
@@ -32,7 +32,7 @@ const FormOferta: React.FC<newOfferProps> = ({idPregunta, updateQuestions}) => {
         });
     }
 
-    const onSubmit: SubmitHandler<Offer> = async (data) => {
+    const onSubmit: SubmitHandler<OfferCreate> = async (data) => {
         const defaultOfferState = 1;
 
         const offer = {

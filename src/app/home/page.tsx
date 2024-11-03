@@ -74,8 +74,6 @@ export default function homePage(){
 
     const handleCardClick = (question: any) => {
         setSelectedQuestion(question);
-        console.log("question: "+selectedQuestion);
-        console.log(selectedQuestion?.ofertaresolucion);
         setIsOpen(true);
     };
     return (
