@@ -3,16 +3,6 @@ import FormOferta from './formOffer';
 import OfferCard from './card-oferta';
 import { Offer } from '../interfaces/oferta';
 
-// Define las interfaces para los datos de usuario y oferta
-interface Usuario {
-    idUsuario: number;
-    fotoPerfil: string;
-    nombre: {
-        primerNombre: string;
-        primerApellido: string;
-    };
-}
-
 interface QuestionOffersProps {
     userData: { rol: number } | null;
     selectedQuestion: {

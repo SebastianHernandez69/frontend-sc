@@ -13,8 +13,10 @@ export interface Offer{
     };
     idPregunta: number;
     descripcion: string;
-    fechaOferta: any;
+    fechaOferta?: any;
     usuario: {
+        valoracion?: number,
+        correo?: string,
         idUsuario: number,
         fotoPerfil: string,
         nombre: {

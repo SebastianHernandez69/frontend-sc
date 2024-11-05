@@ -61,7 +61,7 @@ export default function FormLogin() {
     
       return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
-          <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-md bg-white p-6 rounded-lg shadow-md space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="w-[45vh] sm:w-[60vh]  max-w-md bg-white p-6 rounded-lg shadow-md space-y-4">
             <div className="flex justify-center font-bold text-xl">Login</div>
             
             <div>

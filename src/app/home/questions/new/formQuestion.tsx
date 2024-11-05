@@ -5,19 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SubmitHandler, useForm } from "react-hook-form";
 import React, { useState, useEffect } from "react"
-import { useRouter } from "next/navigation";
-
-interface Categoria{
-    idCategoria: number,
-    categoria: string,
-    imgCategoria: string
-}
-
-interface Materia {
-    idMateria: number;
-    idCategoria: number;
-    materia: string;
-}
+import { useRouter, useSearchParams } from "next/navigation";
+import { number } from "zod";
+import { Categoria, Materia } from "../../interfaces/categories";
 
 interface Pregunta{
     idMateria: number,
@@ -34,9 +24,26 @@ export default function FormQuestion(){
     const [selectedMateria, setSelectedMateria] = useState<number | null>(null);
 
     const router = useRouter();
+    const searchParams = useSearchParams();
+
     //manejar envio de pregunta
-    const {register, handleSubmit, reset} = useForm<Pregunta>();
+    const {register, handleSubmit, reset, setValue} = useForm<Pregunta>();
     const [files, setFiles] = useState<File[]>([]);
+    const [filePreviews, setFilePreviews] = useState<string[]>([]);
+    
+
+    useEffect(() => {
+        const idCategoria = searchParams.get("idCategoria");
+        const idMateria = searchParams.get("idMateria");
+    
+        if (idCategoria) {
+          setSelectedCategory(Number(idCategoria));
+        }
+        if (idMateria) {
+          setSelectedMateria(Number(idMateria));
+          setValue("idMateria", Number(idMateria));
+        }
+      }, []);
 
     // Llenar las categorias
     useEffect(()=>{
@@ -54,7 +61,7 @@ export default function FormQuestion(){
     // Llenar las materias
     useEffect(() => {
         if(selectedCategory !== null){
-            fetch(`http://localhost:3000/categories/materia/${selectedCategory}`)
+            fetch(`${apiUrl}/categories/materia/${selectedCategory}`)
                 .then(response => response.json())
                 .then((data: Materia[]) => setMaterias(data))
                 .catch(error => console.error('Error al cargar las materias:', error));
@@ -64,8 +71,23 @@ export default function FormQuestion(){
     },[selectedCategory]);
 
     // Manejar el cambio de archivos
-    const handleFileChange = (e: any) => {
-        setFiles(Array.from(e.target.files));
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedFiles = Array.from(e.target.files || []);
+        setFiles(selectedFiles);
+
+        const previews = selectedFiles.map((file) => URL.createObjectURL(file));
+        setFilePreviews(previews);
+    }
+
+    const removeFile = (index: number) => {
+        const newFiles = [...files];
+        const newPreviews = [...filePreviews];
+
+        newFiles.splice(index, 1);
+        newPreviews.splice(index, 1);
+
+        setFiles(newFiles);
+        setFilePreviews(newPreviews);
     }
     
     // Enviar pregunta al servidor
@@ -107,18 +129,23 @@ export default function FormQuestion(){
                 const errorData = await res.text(); 
                 console.error("Error del servidor:", errorData);
             }
-            // const resData = await res.json();
-            // console.log("Respuesta: ",resData);
             
             router.push('/home');
             router.refresh();
 
             reset();
             setFiles([]);
+            setFilePreviews([]);
         } catch (error) {
             console.error("Error en la solicitud:", error);
         }
     }
+
+    useEffect(() => {
+        if (selectedMateria !== null) {
+            setValue("idMateria", selectedMateria);
+        }
+    }, [selectedMateria]);
 
     return (
         <>
@@ -195,6 +222,27 @@ export default function FormQuestion(){
                         multiple className="my-2"
                         onChange={handleFileChange}
                     ></Input>
+
+                    {/* Vista previa de las imgs */}
+                    <div className="flex flex-wrap gap-4 mt-4">
+                        {filePreviews.map((preview, index) => (
+                            <div key={index} className="relative">
+                                <img 
+                                    src={preview} 
+                                    alt={`Preview ${index}`} 
+                                    className="w-22 h-20 object-cover rounded"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => removeFile(index)}
+                                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 text-xs"
+                                >
+                                    X
+                                </button>
+                            </div>
+
+                        ))}
+                    </div>
                 </div>
                 <Button type={"submit"}>Enviar</Button>
             </form>

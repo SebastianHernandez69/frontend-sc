@@ -129,7 +129,7 @@ export default function homePage(){
                         {selectedQuestion?.imgpregunta && selectedQuestion.imgpregunta.length > 0 && (
                             <Carousel images={selectedQuestion.imgpregunta.map(img => img.img)} />
                         )}
-                        <p className="text-sm mt-2">
+                        <p className=" text-sm mt-6">
                             Materia: {selectedQuestion?.materia.materia}
                         </p>
                         <p className="text-sm">

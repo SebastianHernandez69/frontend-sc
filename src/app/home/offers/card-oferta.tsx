@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { Offer } from '../interfaces/oferta';
 import { Dialog, DialogContent, DialogDescription, DialogOverlay, DialogPortal, DialogTitle } from '@radix-ui/react-dialog';
 import { DialogHeader } from '@/components/ui/dialog';
+import { Star } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 type CompleteOfferCardProp = {
     offer: Offer
@@ -12,6 +14,11 @@ const OfferCard: React.FC<CompleteOfferCardProp> = ({offer}) => {
 
     const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
     const [isOpen, setIsOpen] = useState(false);
+    const router = useRouter();
+
+    const handleProfileClick = (idTutor: number) => {
+        router.push(`/home/profile/profile-guest?tutor=${idTutor}`)
+    }
 
     const handleOfferClick = (offer: any) => {
         setSelectedOffer(offer);
@@ -54,18 +61,41 @@ const OfferCard: React.FC<CompleteOfferCardProp> = ({offer}) => {
                             }`}
                         >
                             <DialogHeader>
-                                <DialogTitle className="text-sm font-bold text-center">
+                                <DialogTitle className="text-md font-bold text-center">
                                     Detalles de la oferta
                                 </DialogTitle>
                                 <DialogDescription></DialogDescription>
-                                
-
                             </DialogHeader>
+                            <div className="flex items-center border-t border-gray-300 p-3 w-full">
+                                <div onClick={() => handleProfileClick(offer.usuario.idUsuario)} className="flex-shrink-0 w-[12vh] h-[12vh] sm:w-[20vh] sm:h-[20vh]">
+                                    <img src={selectedOffer?.usuario.fotoPerfil} className="w-full h-full object-cover rounded-full" />
+                                </div>
+                                <div className="flex flex-col ml-3 justify-center w-full">
+                                    <p className="font-semibold text-md text-center">{`${offer.usuario.nombre.primerNombre} ${offer.usuario.nombre.primerApellido}`}</p>
+                                    <p className="font-ligth text-sm text-center">{offer.usuario.correo}</p>
+                                    <p className="flex justify-center font-ligth text-sm text-center">
+                                        {offer.usuario.valoracion}
+                                        <Star className="w-4 h-4 ml-1 text-yellow-500" />
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex flex-col my-5 justify-center w-full">
+                                <p className="font-ligth text-sm text-center">{offer.descripcion}</p>
+                            </div>
+                            <div className='border my-3'>
+                            </div>
+                            <div className="flex mt-2 text-xs justify-between justify-center w-full">
+                                <p className=''>
+                                    {new Date(offer.fechaOferta).toLocaleString()}
+                                </p>
+                                <p>
+                                    {offer.estadoOfertaSolucion?.estadoOferta}
+                                </p>
+                            </div>
                         </DialogContent>
                     </DialogOverlay>
                 </DialogPortal>
             </Dialog>
-
         </>
     );
 };
