@@ -6,7 +6,6 @@ import styles from "../../../styles/galleryCategories.module.css";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { userPayload } from "../interfaces/userPayload-int";
 import { jwtDecode } from "jwt-decode";
-import Image from 'next/image'
 
 interface Category {
   idCategoria: number;
@@ -104,7 +103,7 @@ export default function GalleryCategories() {
               className={styles.categoryCard}
               onClick={() => handleCategoryClick(category)}
             >
-              <Image
+              <img
                 src={category.imgCategoria}
                 alt={category.categoria}
                 width={200}
@@ -128,7 +127,7 @@ export default function GalleryCategories() {
               {subcategories.length > 0 ? (
                 subcategories.map((subcategory) => (
                   <li key={subcategory.idMateria} className={styles.subcategoryItem}>
-                    <Image
+                    <img
                       src={subcategory.imgMateria}
                       alt={subcategory.materia}
                       className="w-[10vh] "
