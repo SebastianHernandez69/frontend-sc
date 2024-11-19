@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import styles from "../styles/home.module.css";
 import NavBar from "../components/navBar"
+import { FaCat } from 'react-icons/fa';
+
 interface Category {
   idCategoria: number;
   categoria: string;
@@ -166,6 +168,11 @@ export default function Home() {
           </section>
         </main>
       </div>
+      <div>
+      <h1>Bienvenido a la página principal</h1>
+      {/* Aquí se incluye el ícono */}
+      <FaCat size={50} color="#4CAF50" />
+    </div>
     </>
   );
 }
