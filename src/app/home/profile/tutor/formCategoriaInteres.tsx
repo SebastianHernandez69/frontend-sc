@@ -7,6 +7,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { useMateriaContext } from "@/context/MateriaTutorContext";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -15,10 +16,9 @@ export default function FormCategoriaMateria() {
     const [materias, setMaterias] = useState<Materia[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
     const [selectedMateria, setSelectedMateria] = useState<number | null>(null);
-
-    const router = useRouter();
-
     const {register, handleSubmit, reset} = useForm<MateriaTutor>();
+    const {addMateriaTutor} = useMateriaContext();
+    const router = useRouter();
 
     const alertAddMateriaSuccess = () => {
         toast.success("Materia agregada con exito", {
@@ -80,6 +80,9 @@ export default function FormCategoriaMateria() {
                 console.error(errData);
             }
 
+            const data = await res.json();
+
+            addMateriaTutor(data.materia);
             alertAddMateriaSuccess();
             reset();
             router.refresh();

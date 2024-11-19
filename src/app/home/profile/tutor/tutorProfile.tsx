@@ -6,8 +6,8 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { Dot } from "lucide-react";
 import FormCategoriaMateria from "./formCategoriaInteres";
-import { UserProfile } from "../../interfaces/UserProfile";
 import { useUserContext } from "@/context/UserContext";
+import { useMateriaContext } from "@/context/MateriaTutorContext";
 
 interface PerfilTutor {
   primerNombre?: string;
@@ -45,10 +45,9 @@ export default function PerfilTutor() {
   const [token, setToken] = useState<string | null>(null);
   const [esEditable, setEsEditable] = useState(false);
   const [valoracion, setValoracion] = useState(4); // Valoración del tutor
-  const [profileData, setProfileData] = useState<UserProfile | null>(null);
   // contexto de usuario
   const {user, updateProfilePhoto} = useUserContext();
-
+  const {materias} = useMateriaContext();
   // Estados separados para cada sección
   const [conocimientos, setConocimientos] = useState<Conocimiento[]>([]);
   const [experiencias, setExperiencias] = useState<Experiencia[]>([]);
@@ -93,7 +92,6 @@ export default function PerfilTutor() {
             `${data.nombre.primerNombre || ""} ${data.nombre.primerApellido || ""}`.trim()
           );
           setCorreoMostrado(data.correo);
-          setProfileData(data);
           setMensaje("");
         })
         .catch((error) => {
@@ -420,10 +418,11 @@ export default function PerfilTutor() {
                     <p className="font-bold">Materias de interes</p>
                 </div>
                 <div className="ml-4 mb-2 text-sm">
-                    {profileData?.materia_tutor?.map((materia) => (
-                        <p className="flex" key={materia.materia.idMateria}>
-                            <Dot/>
-                            {materia.materia.materia}</p>
+                    {materias?.map((materia, index) => (
+                        <p className="flex" key={index}>
+                          <Dot/>
+                          {materia}
+                        </p>
                     ))}
                 </div>
             </div>

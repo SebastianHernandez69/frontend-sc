@@ -1,38 +1,17 @@
 "use client"
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
 
 import useScroll from "@/hooks/use-scroll";
 import { cn } from "@/lib/utils";
-import { userPayload } from "@/app/home/interfaces/userPayload-int";
-import { jwtDecode } from "jwt-decode";
-import DropdownProfile from "./drop-menu";
 import RouteGuard from "../routeGuard";
 
 
 const Header = () => {
     const scrolled = useScroll(5);
     const selectedLayout = useSelectedLayoutSegment();
-
-    const [token, setToken] = useState<string | null>(null);
-    const [userData, setUserData] = useState<userPayload | null>(null);
-
-    useEffect(() => {
-        const access_token = sessionStorage.getItem("access_token");
-
-        setToken(access_token);
-    }, []);
-
-    useEffect(() => {
-        if(token){
-            const decoded = jwtDecode<userPayload>(token);
-            setUserData(decoded);
-        }else{
-            setUserData(null);
-        }
-    }, [token]);
 
     return (
         <RouteGuard>
@@ -57,11 +36,7 @@ const Header = () => {
                     </div>
 
                         <div className="hidden md:block">
-                        <div className="h-10 w-10 rounded-full bg-sky-300 flex items-center justify-center text-center">
-                            {userData?.profilePhoto !== null && (
-                                <DropdownProfile profilePhoto={userData?.profilePhoto}/>
-                            )}
-                        </div>
+                        
                     </div>
                 </div>
             </div>
