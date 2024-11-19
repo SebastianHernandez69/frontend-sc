@@ -14,8 +14,8 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
     icon: <Icon icon="lucide:folder" width="24" height="24" />,
   },
   {
-    title: 'Preguntas contestadas',
-    path: '/home/categorias',
+    title: 'Categorias y Materias',
+    path: '/admin/Categorias',
     icon: <Icon icon="lucide:circle-check-big" width="24" height="24" />,
   },
   {
