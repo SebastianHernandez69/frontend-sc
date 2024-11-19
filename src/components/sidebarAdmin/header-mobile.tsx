@@ -1,7 +1,6 @@
 "use client";
 
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
-import { jwtDecode } from 'jwt-decode';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { SIDENAV_ITEMS } from '@/constantsAdmin';
@@ -53,7 +52,7 @@ const HeaderMobile = () => {
                 className="absolute grid w-full gap-3 px-10 py-16 max-h-screen overflow-y-auto"
             >
                 {SIDENAV_ITEMS.map((item, idx) => {
-                    const isLastItem = idx === SIDENAV_ITEMS.length - 1;
+                    const isLastItem = idx === SIDENAV_ITEMS.length + 10;
                     return (
                         <div key={idx}>
                             {item.submenu ? (
@@ -208,7 +207,7 @@ const MenuItemWithSubMenu: React.FC<MenuItemWithSubMenuProps> = ({
             <div className="mt-2 ml-2 flex flex-col space-y-2">
                 {subMenuOpen &&
                     item.subMenuItems?.map((subItem, subIdx) => (
-                        <MenuItem key={subIdx}>
+                        <MenuItem key={subIdx + 10}>
                             <Link
                                 href={subItem.path}
                                 onClick={() => toggleOpen()}

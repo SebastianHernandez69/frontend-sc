@@ -8,6 +8,7 @@ export interface Materia {
     idMateria: number;
     idCategoria: number;
     materia: string;
+    imgMateria?: string
 }
 
 export interface MateriaTutor{

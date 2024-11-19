@@ -1,5 +1,4 @@
 import React from "react";
-import Navbar from "@/components/navBar";
 import Header from "@/components/sidebarAdmin/header";
 import HeaderMobile from "@/components/sidebarAdmin/header-mobile";
 import SideNav from "@/components/sidebarAdmin/side-nav";
@@ -18,15 +17,15 @@ export default function ProfileLayout({
             <div className="flex">
                 <SideNav />
                 <main className="flex-1">
-                    <MarginWidthWrapper>
+                    <MarginWidthWrapper> 
                         <Header />
                         <HeaderMobile />
                         <PageWrapper>
                             {children}
                             <ToastContainer />
-                        </PageWrapper>
+                         </PageWrapper>
                     </MarginWidthWrapper>
-                </main>
+                </main> 
             </div>    
         </>
     );

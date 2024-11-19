@@ -46,7 +46,6 @@ export default function PerfilTutor() {
   const [esEditable, setEsEditable] = useState(false);
   const [valoracion, setValoracion] = useState(4); // Valoración del tutor
   const [profileData, setProfileData] = useState<UserProfile | null>(null);
-
   // contexto de usuario
   const {user, updateProfilePhoto} = useUserContext();
 

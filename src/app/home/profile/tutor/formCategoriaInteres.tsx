@@ -133,7 +133,7 @@ export default function FormCategoriaMateria() {
                     >
                         {
                             materias.map(materia => (
-                                <option key={materia.idMateria} value={materia.idMateria}>
+                                <option key={materia.idMateria + 100} value={materia.idMateria}>
                                     {materia.materia}
                                 </option>
                             ))

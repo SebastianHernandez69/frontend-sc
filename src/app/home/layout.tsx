@@ -4,7 +4,6 @@ import HeaderMobile from "@/components/sidebar/header-mobile";
 import SideNav from "@/components/sidebar/side-nav";
 import PageWrapper from "@/components/sidebar/page-wrapper";
 import MarginWidthWrapper from "@/components/sidebar/margin-width-wrapper";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserProvider } from "@/context/UserContext";
 
@@ -24,7 +23,6 @@ export default function ProfileLayout({
                             <Header/>
                             <HeaderMobile/>
                             <PageWrapper>{children}
-                            <ToastContainer />
                             </PageWrapper>
                         </MarginWidthWrapper>
                     </main>

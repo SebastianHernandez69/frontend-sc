@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { SIDENAV_ITEMS } from '@/constantsAdmin'; // Eliminado SIDENAV_PUPIL_ITEMS
@@ -21,7 +21,7 @@ const SideNav = () => {
 
                 <div className="flex flex-col space-y-2 md:px-6">
                     {SIDENAV_ITEMS.map((item, idx) => {
-                        return <MenuItem key={idx} item={item} />;
+                        return <MenuItem key={idx + 10} item={item} />;
                     })}
                 </div>
             </div>
@@ -61,7 +61,7 @@ const MenuItem = ({ item }: { item: SideNavItem }) => {
                             {item.subMenuItems?.map((subItem, idx) => {
                                 return (
                                     <Link
-                                        key={idx}
+                                        key={idx+10}
                                         href={subItem.path}
                                         className={`${
                                             subItem.path === pathname ? 'font-bold' : ''

@@ -51,7 +51,7 @@ export default function FormLogin() {
       });
 
       if (!res.ok) {
-        alertError("Correo o contraseña invalidos");
+        alertError( "Correo o contraseña inválidos");
         return;
       }
 
