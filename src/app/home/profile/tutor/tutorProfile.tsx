@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Dot } from "lucide-react";
 import FormCategoriaMateria from "./formCategoriaInteres";
 import { UserProfile } from "../../interfaces/UserProfile";
+import { useUserContext } from "@/context/UserContext";
 
 interface PerfilTutor {
   primerNombre?: string;
@@ -37,7 +38,6 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function PerfilTutor() {
   const { register, handleSubmit, setValue } = useForm<PerfilTutor>();
-  const [foto, setFoto] = useState<File | null>(null);
   const [pestañaActiva, setPestañaActiva] = useState("datosPersonales");
   const [nombreMostrado, setNombreMostrado] = useState("Nombre Apellido");
   const [correoMostrado, setCorreoMostrado] = useState("correo@example.com");
@@ -45,9 +45,10 @@ export default function PerfilTutor() {
   const [token, setToken] = useState<string | null>(null);
   const [esEditable, setEsEditable] = useState(false);
   const [valoracion, setValoracion] = useState(4); // Valoración del tutor
-  const [profilePhoto, setProfilePhoto] = useState<string | null>("https://via.placeholder.com/150");
-
   const [profileData, setProfileData] = useState<UserProfile | null>(null);
+
+  // contexto de usuario
+  const {user, updateProfilePhoto} = useUserContext();
 
   // Estados separados para cada sección
   const [conocimientos, setConocimientos] = useState<Conocimiento[]>([]);
@@ -88,7 +89,6 @@ export default function PerfilTutor() {
           setValue("segundoApellido", data.nombre.segundoApellido);
           setValue("correo", data.correo);
           setValue("edad", data.edad);
-          setProfilePhoto(data.fotoPerfil);
           setValoracion(data.valoracion);
           setNombreMostrado(
             `${data.nombre.primerNombre || ""} ${data.nombre.primerApellido || ""}`.trim()
@@ -141,10 +141,38 @@ export default function PerfilTutor() {
     setExperiencias((prev) => [...prev, experiencia]);
   };
 
-  const manejarCambioFoto = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const fotoSeleccionada = e.target.files[0];
-      setFoto(fotoSeleccionada);
+      const file = e.target.files[0];
+
+      if (file.size > 5 * 1024 * 1024) { 
+        console.log("El archivo es demasiado grande");
+        return;
+      }
+
+      const formData = new FormData();
+
+      formData.append("file", file);
+
+      try {
+        const res = await fetch(`${apiUrl}/user/update-profile-foto`, {
+          method: "PATCH",
+          headers: {
+              Authorization: `Bearer ${token}`, 
+          },
+          body: formData
+        });
+
+        if(!res.ok){
+          console.log(`Error al actualizar la foto de perfil: ${res.status}`);
+        }
+
+        const data = await res.json();
+
+        updateProfilePhoto(data.fotoPerfil);
+      } catch (error) {
+        console.error(`Error al actualizar la foto de perfil: ${error}`);
+      }
     }
   };
 
@@ -172,11 +200,14 @@ export default function PerfilTutor() {
       <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-md sm:w-60">
         <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
           
-            <img src={profilePhoto ?? undefined} alt="Foto de perfil" className="w-full h-full object-cover" />
+            <img src={user?.fotoPerfil ?? undefined} alt="Foto de perfil" className="w-full h-full object-cover" />
           
         </div>
-        <Input type="file" accept="image/*" onChange={manejarCambioFoto} className="my-2 mt-4 max-w-[40vh] " />
-        {foto && <p className="text-sm text-gray-500">Foto seleccionada: {foto.name}</p>}
+        <label htmlFor="photoUpload" className="text-blue-500 cursor-pointer">
+          Cambiar Foto
+        </label>
+        <Input id="photoUpload" type="file" accept="image/*" onChange={handlePhotoChange} className="my-2 mt-4 max-w-[40vh] hidden" />
+        
         <p className="font-medium mt-2">{nombreMostrado}</p>
         <p className="text-sm text-gray-500">{correoMostrado}</p>
 

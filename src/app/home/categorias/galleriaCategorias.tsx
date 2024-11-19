@@ -47,7 +47,6 @@ export default function GalleryCategories() {
         }
         const data = await response.json();
         setCategories(data);
-        console.log("Categorías obtenidas:", data);
       } catch (error) {
         console.error("Error al obtener las categorías:", error);
       }
@@ -70,7 +69,6 @@ export default function GalleryCategories() {
       }
       const data = await response.json();
       setSubcategories(data);
-      console.log("Subcategorías obtenidas:", data);
     } catch (error) {
       console.error("Error al obtener las subcategorías:", error);
     }

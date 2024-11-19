@@ -5,6 +5,7 @@ import { Dot, Star } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import { UserProfile } from "../../interfaces/UserProfile";
+import { useUserContext } from "@/context/UserContext";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -12,7 +13,8 @@ const GuestContent = () => {
   const searchParams = useSearchParams();
   const idTutor = searchParams.get('tutor');
   const [profileData, setProfileData] = useState<UserProfile | null>(null);
-  
+  const {user} = useUserContext();
+
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
@@ -57,7 +59,7 @@ const GuestContent = () => {
         <div className="sm:grid grid-cols-1 sm:grid-cols-3 gap-2 lg:gap-4 w-full">
           <div className="shadow rounded min-h-[25vh] sm:min-h-[40vh]">
             <div className="flex justify-center sm:mt-6">
-              <img src={profileData?.fotoPerfil} className="mt-5 rounded-full w-[10vh] sm:w-[16vh] sm:h-[16vh]" alt="" />
+              <img src={user?.fotoPerfil} className="mt-5 rounded-full w-[10vh] sm:w-[16vh] sm:h-[16vh]" alt="" />
             </div>
             <div className="flex flex-col text-sm mt-5 text-center">
               <p className="font-thin">{profileData?.nombre.primerNombre} {profileData?.nombre.primerApellido}</p>

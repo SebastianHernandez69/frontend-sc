@@ -51,7 +51,7 @@ export default function ProfileTutorPage() {
           <div className="max-w-4xl mx-auto p-6">
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl font-bold">
+                <CardTitle className="text-xl font-bold text-center">
                   Perfil del Tutor
                 </CardTitle>
               </CardHeader>
@@ -65,7 +65,7 @@ export default function ProfileTutorPage() {
         {userData?.rol == 2 && (
           <Card>
               <CardHeader>
-                  <CardTitle className="text-xl font-bold">Perfil del pupilo</CardTitle>
+                  <CardTitle className="text-xl font-bold text-center">Perfil del pupilo</CardTitle>
               </CardHeader>
               <CardContent>
                   {isEditing ? (

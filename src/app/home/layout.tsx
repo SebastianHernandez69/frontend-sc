@@ -6,6 +6,7 @@ import PageWrapper from "@/components/sidebar/page-wrapper";
 import MarginWidthWrapper from "@/components/sidebar/margin-width-wrapper";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { UserProvider } from "@/context/UserContext";
 
 export default function ProfileLayout({
     children,
@@ -15,18 +16,20 @@ export default function ProfileLayout({
 
     return (
         <>   
-            <div className="flex">
-                <SideNav />
-                <main className="flex-1">
-                    <MarginWidthWrapper>
-                        <Header/>
-                        <HeaderMobile/>
-                        <PageWrapper>{children}
-                        <ToastContainer />
-                        </PageWrapper>
-                    </MarginWidthWrapper>
-                </main>
-            </div>    
+            <UserProvider>
+                <div className="flex">
+                    <SideNav />
+                    <main className="flex-1">
+                        <MarginWidthWrapper>
+                            <Header/>
+                            <HeaderMobile/>
+                            <PageWrapper>{children}
+                            <ToastContainer />
+                            </PageWrapper>
+                        </MarginWidthWrapper>
+                    </main>
+                </div>    
+            </UserProvider>
         </>
     );
 }

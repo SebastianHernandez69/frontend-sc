@@ -38,7 +38,7 @@ const SideNav = () => {
         <div className="md:w-60 bg-white h-screen flex-1 fixed hidden md:flex">
             <div className="flex flex-col space-y-6 w-full bg-blue-500 text-white">
                 <Link
-                href="/"
+                href="/home"
                 className="flex flex-row space-x-3 items-center justify-center md:justify-start md:px-6 border-b border-zinc-200 h-12 w-full bg-blue-500 text-white"
                 >
                 <span className="h-7 w-7 bg-zinc-300 rounded-lg" />

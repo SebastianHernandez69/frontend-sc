@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
+import { useUserContext } from "@/context/UserContext";
 
 interface ProfileData {
     primerNombre: string;
@@ -23,8 +24,9 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL; // Definimos apiUrl
 
 export default function ActualizarInfoPupilo({ onGoBack }: ActualizarInfoPupiloProps) {
     const { register, handleSubmit, setValue } = useForm<ProfileData>();
-    const [profilePhoto, setProfilePhoto] = useState<string>("https://via.placeholder.com/150");
+    const [token, setToken] = useState<string | null>(null);
     const [message, setMessage] = useState<string>("Cargando detalles del perfil...");
+    const {user, updateProfilePhoto} = useUserContext();
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -38,6 +40,7 @@ export default function ActualizarInfoPupilo({ onGoBack }: ActualizarInfoPupiloP
                 return;
             }
 
+            setToken(access_token);
             // Realizar la solicitud GET usando apiUrl
             fetch(`${apiUrl}/user/profile`, {
                 method: "GET",
@@ -62,7 +65,6 @@ export default function ActualizarInfoPupilo({ onGoBack }: ActualizarInfoPupiloP
                     setValue("edad", data.edad);
                     setValue("telefono", data.telefono);
                     setValue("dni", data.dni);
-                    setProfilePhoto(data.fotoPerfil);
                     setMessage("");
                 })
                 .catch((error) => {
@@ -100,11 +102,38 @@ export default function ActualizarInfoPupilo({ onGoBack }: ActualizarInfoPupiloP
         }
     };
 
-    const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handlePhotoChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
             const file = event.target.files[0];
-            const photoURL = URL.createObjectURL(file);
-            setProfilePhoto(photoURL);
+
+            if (file.size > 5 * 1024 * 1024) { 
+                console.log("El archivo es demasiado grande");
+                return;
+            }
+
+            const formData = new FormData(); 
+
+            formData.append("file", file);
+
+            try {
+                const res = await fetch(`${apiUrl}/user/update-profile-foto`, {
+                    method: "PATCH",
+                    headers: {
+                        Authorization: `Bearer ${token}`, 
+                    },
+                    body: formData
+                });
+    
+                if(!res.ok){
+                    console.log(`Error al actualizar la foto de perfil: ${res.status}`);
+                }
+    
+                const data = await res.json();
+    
+                updateProfilePhoto(data.fotoPerfil);
+            } catch (error) {
+                console.error(`Error al actualizar la foto de perfil: ${error}`);
+            }
         }
     };
 
@@ -117,7 +146,7 @@ export default function ActualizarInfoPupilo({ onGoBack }: ActualizarInfoPupiloP
             {/* Foto de Perfil */}
             <div className="flex flex-col items-center space-y-2">
                 <img
-                    src={profilePhoto}
+                    src={user?.fotoPerfil}
                     alt="Foto de Perfil"
                     className="w-24 h-24 rounded-full object-cover"
                 />

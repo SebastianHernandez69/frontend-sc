@@ -115,10 +115,6 @@ export default function Register() {
     if(imgPerfil){
       dataForm.append('file', imgPerfil);
     }
-
-    for (const [key, value] of dataForm.entries()) {
-      console.log(`${key}:`, value);
-    }
     
     try {
       const response = await fetch(`${apiUrl}/auth/sign-up`, {

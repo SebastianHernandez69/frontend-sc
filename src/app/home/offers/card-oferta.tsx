@@ -158,12 +158,14 @@ const OfferCard: React.FC<CompleteOfferCardProp> = ({offer}) => {
                                 </div>
                                 <div className='border my-3'>
                                 </div>
-                                <div className='flex w-full justify-between'>
-                                    <Button onClick={() => handleCreateConversation(userData.sub, offer.usuario.idUsuario)}>Enviar mensaje</Button>
-                                    {offer.estadoOfertaSolucion?.idEstadoOferta === 1 && (
-                                        <Button onClick={() => handleAcceptOffer(offer.idOferta)}>Aceptar</Button>
-                                    )}
-                                </div>
+                                {userData?.rol == 2 && (
+                                    <div className='flex w-full justify-between'>
+                                        <Button onClick={() => handleCreateConversation(userData.sub, offer.usuario.idUsuario)}>Enviar mensaje</Button>
+                                        {offer.estadoOfertaSolucion?.idEstadoOferta === 1 && (
+                                            <Button onClick={() => handleAcceptOffer(offer.idOferta)}>Aceptar</Button>
+                                        )}
+                                    </div>
+                                )}
                             </DialogContent>
                         </DialogOverlay>
                     </DialogPortal>
