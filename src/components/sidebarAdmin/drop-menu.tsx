@@ -16,10 +16,6 @@ const DropdownProfile: React.FC<PhotoProp> = ({profilePhoto}) => {
         router.push("/auth/login")
     }
 
-    const handleChangePassword = () => {
-        router.push("/auth/change-pass"); // Redirige a la página de change password.
-      };
-
     return(
         <>
             <DropdownMenu>
@@ -27,7 +23,7 @@ const DropdownProfile: React.FC<PhotoProp> = ({profilePhoto}) => {
                     <img src={profilePhoto} alt="" className="rounded-full" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="mr-5">
-                    <DropdownMenuItem onClick={handleChangePassword}>Cambiar contraseña</DropdownMenuItem>
+                    <DropdownMenuItem >Cambiar contraseña</DropdownMenuItem>
                     <DropdownMenuSeparator/>
                     <DropdownMenuItem onClick={handleLogout}>Cerrar sesion</DropdownMenuItem>
                 </DropdownMenuContent>
