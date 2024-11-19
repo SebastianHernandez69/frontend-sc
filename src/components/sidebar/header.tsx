@@ -1,6 +1,6 @@
 "use client"
 
-import React, { use, useEffect, useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
 
