@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
@@ -10,7 +10,6 @@ import { userPayload } from "@/app/home/interfaces/userPayload-int";
 import { jwtDecode } from "jwt-decode";
 import DropdownProfile from "./drop-menu";
 import RouteGuard from "../routeGuard";
-
 
 const Header = () => {
     const scrolled = useScroll(5);
@@ -26,10 +25,10 @@ const Header = () => {
     }, []);
 
     useEffect(() => {
-        if(token){
+        if (token) {
             const decoded = jwtDecode<userPayload>(token);
             setUserData(decoded);
-        }else{
+        } else {
             setUserData(null);
         }
     }, [token]);
@@ -40,11 +39,11 @@ const Header = () => {
                 className={cn(
                     `sticky inset-x-0 top-0 z-30 w-full transition-all border-b border-gray-200 bg-blue-500`,
                     {
-                    'border-b border-gray-200 bg-blue-500/90 backdrop-blur-sm': scrolled,
-                    'border-b border-gray-200 bg-blue-500': selectedLayout,
-                    },
+                        "border-b border-gray-200 bg-blue-500/90 backdrop-blur-sm": scrolled,
+                        "border-b border-gray-200 bg-blue-500": selectedLayout,
+                    }
                 )}
-                >
+            >
                 <div className="flex h-[47px] items-center justify-between px-4">
                     <div className="flex items-center space-x-4">
                         <Link
@@ -52,22 +51,22 @@ const Header = () => {
                             className="flex flex-row space-x-3 items-center justify-center md:hidden"
                         >
                             <span className="h-7 w-7 bg-zinc-300 rounded-lg" />
-                            <span className="font-bold text-xl flex text-white">SharkCat</span>
+                            <span className="font-bold text-xl flex text-white">
+                                SharkCat
+                            </span>
                         </Link>
                     </div>
 
-                        <div className="hidden md:block">
+                    <div className="hidden md:block">
+                        {/* Always show dropdown */}
                         <div className="h-10 w-10 rounded-full bg-sky-300 flex items-center justify-center text-center">
-                            {userData?.profilePhoto !== null && (
-                                <DropdownProfile profilePhoto={userData?.profilePhoto}/>
-                            )}
+                            <DropdownProfile profilePhoto={userData?.profilePhoto || undefined} />
                         </div>
                     </div>
                 </div>
             </div>
         </RouteGuard>
-        
-    )
-}
+    );
+};
 
 export default Header;
