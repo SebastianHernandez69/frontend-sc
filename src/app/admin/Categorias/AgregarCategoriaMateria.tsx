@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 
 interface Category {
   idCategoria: number;
@@ -44,9 +45,9 @@ export default function Categories() {
         }
         const data = await response.json();
         setCategories(data);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error al obtener las categorías:", error);
-        alert(`Error al obtener las categorías: ${error.message}`);
+        toast.error(`Error al obtener las categorías: ${error.message}`);
       }
     };
 
@@ -59,7 +60,7 @@ export default function Categories() {
         const allMaterias: Materia[] = [];
         for (const category of categories) {
           const response = await fetch(`${apiUrl}/categories/materia/${category.idCategoria}`, {
-           method: "GET",
+            method: "GET",
             headers: {
               Authorization: `Bearer ${getToken()}`,
             },
@@ -70,9 +71,9 @@ export default function Categories() {
           }
         }
         setMaterias(allMaterias);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error al obtener las materias:", error);
-        alert(`Error al obtener las materias: ${error.message}`);
+        toast.error(`Error al obtener las materias: ${error.message}`);
       }
     };
 
@@ -104,13 +105,13 @@ export default function Categories() {
         throw new Error(data.message || "Error al agregar la categoría.");
       }
 
-      alert("Categoría agregada con éxito.");
+      toast.success("Categoría agregada con éxito.");
       setShowAddCategoryForm(false);
       setNewCategory({ categoria: "", imgFile: null });
       setCategories((prev) => [...prev, data]);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error al agregar categoría:", error);
-      alert(`Error: ${error.message}`);
+      toast.error(`Error: ${error.message}`);
     }
   };
 
@@ -124,7 +125,7 @@ export default function Categories() {
     }
     for (const [key, value] of formData.entries()) {
       console.log(`${key}:`, value);
-  }
+    }
     try {
       const response = await fetch(`${apiUrl}/materia/add`, {
         method: "POST",
@@ -140,13 +141,13 @@ export default function Categories() {
         throw new Error(data.message || "Error al agregar la materia.");
       }
 
-      alert("Materia agregada con éxito.");
+      toast.success("Materia agregada con éxito.");
       setShowAddMateriaForm(false);
       setNewMateria({ idCategoria: "", materia: "", imgFile: null });
       setMaterias((prev) => [...prev, data]);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error al agregar materia:", error);
-      alert(`Error: ${error.message}`);
+      toast.error(`Error: ${error.message}`);
     }
   };
 
