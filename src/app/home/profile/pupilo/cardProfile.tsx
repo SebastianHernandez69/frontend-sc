@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { Star } from "lucide-react";
 import { useUserContext } from "@/context/UserContext";
 
 interface ProfileData {
