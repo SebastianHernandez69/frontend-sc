@@ -18,7 +18,7 @@ const loginSchema = z.object({
 });
 
 type loginDto = z.infer<typeof loginSchema>;
-type DecodedToken = { rol: number }; // Tipo para el token decodificado
+type DecodedToken = { rol: number; isEnabled: boolean }; // Tipo para el token decodificado
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -51,16 +51,21 @@ export default function FormLogin() {
       });
 
       if (!res.ok) {
-        alertError( "Correo o contraseña inválidos");
+        alertError("Correo o contraseña inválidos");
         return;
       }
 
       const responseData = await res.json();
       const access_token = responseData.access_token;
 
-      // Decodificar el JWT para obtener el rol
+      // Decodificar el JWT para obtener el rol y estado
       const decodedToken = jwtDecode<DecodedToken>(access_token);
-      const userRole = decodedToken.rol;
+      const { rol: userRole, isEnabled } = decodedToken;
+
+      if (!isEnabled) {
+        alertError("Usuario deshabilitado. Ponte en contacto con el administrador.");
+        return;
+      }
 
       sessionStorage.setItem("access_token", access_token);
       router.refresh();
