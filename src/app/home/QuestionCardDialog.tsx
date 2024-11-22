@@ -24,7 +24,11 @@ const QuestionCardDialog:React.FC<QuestionCardDialogProps> = ({ question, userDa
 
     return (
         <>
-            <Card onClick={handleCardClick} className="m-2 overflow-hidden shadow cursor-pointer">
+            <Card onClick={handleCardClick} className="m-2 overflow-hidden shadow cursor-pointer relative">
+                <div
+                    className={`absolute w-full h-3 px-2 py-1 text-xs font-bold text-white rounded-t bg-red-300`}
+                >
+                </div>
                 <CardHeader>
                     <CardTitle className="flex justify-between">
                         {question.titulo}

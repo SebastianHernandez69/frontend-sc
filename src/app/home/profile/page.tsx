@@ -55,7 +55,7 @@ export default function ProfileTutorPage() {
                   Perfil del Tutor
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="">
                 {/* Llama al componente ProfileTutor */}
                 <ProfileTutor />
               </CardContent>
