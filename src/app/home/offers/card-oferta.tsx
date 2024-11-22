@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { Offer } from '../interfaces/oferta';
 import { Dialog, DialogContent, DialogDescription, DialogOverlay, DialogPortal, DialogTitle } from '@radix-ui/react-dialog';
 import { DialogHeader } from '@/components/ui/dialog';
-import { Star } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { userPayload } from '../interfaces/userPayload-int';
 import { jwtDecode } from 'jwt-decode';
@@ -93,6 +92,18 @@ const OfferCard: React.FC<CompleteOfferCardProp> = ({offer}) => {
         router.push(`/home/chat?channel=${encodeURIComponent(resData.id)}`);
     }
 
+    const renderStars = () => {
+        const stars = [];
+        for (let i = 1; i <= offer.usuario.valoracion; i++) {
+          stars.push(
+            <span key={i} className={`text-${i <= offer.usuario.valoracion ? "yellow" : "gray"}-500`}>
+              ★
+            </span>
+          );
+        }
+        return stars;
+    };
+
     return (
         <>
             <RouteGuard>
@@ -137,10 +148,7 @@ const OfferCard: React.FC<CompleteOfferCardProp> = ({offer}) => {
                                     <div className="flex flex-col ml-3 justify-center w-full">
                                         <p className="font-semibold text-md text-center">{`${offer.usuario.nombre.primerNombre} ${offer.usuario.nombre.primerApellido}`}</p>
                                         <p className="font-ligth text-sm text-center">{offer.usuario.correo}</p>
-                                        <p className="flex justify-center font-ligth text-sm text-center">
-                                            {offer.usuario.valoracion}
-                                            <Star className="w-4 h-4 ml-1 text-yellow-500" />
-                                        </p>
+                                        <div className="flex justify-center space-x-1 mt-2">{renderStars()}</div> 
                                     </div>
                                 </div>
                                 <div className="flex flex-col my-5 justify-center w-full">
