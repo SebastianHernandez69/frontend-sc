@@ -24,7 +24,6 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function FormLogin() {
   const router = useRouter();
-
   const { register, handleSubmit, formState: { errors } } = useForm<loginDto>({
     resolver: zodResolver(loginSchema),
   });
@@ -80,6 +79,10 @@ export default function FormLogin() {
       console.error("Error en la solicitud:", error);
     }
   };
+  
+  const handleRecoveryPass = () => {
+    router.push("/auth/recovery-pass");
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -119,6 +122,15 @@ export default function FormLogin() {
           >
             Log in
           </Button>
+        </div>
+        <div className="flex justify-end mt-4">
+          <button
+            type="button"
+            className="text-sm text-blue-700"
+            onClick={() => handleRecoveryPass()}
+          >
+            ¿Olvidaste tu contraseña?
+          </button>
         </div>
       </form>
     </div>
