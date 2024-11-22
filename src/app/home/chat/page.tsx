@@ -31,7 +31,6 @@ function ChatContent(){
     const [userDataToken, setUserDataToken] = useState<userPayload | null>(null);
     const [activeChannel, setActiveChannel] = useState<any>(null);
     const searchParams = useSearchParams();
-
     const channelId = searchParams.get('channel');
 
     // Configuración del cliente de Stream Chat
@@ -62,6 +61,10 @@ function ChatContent(){
         return <div>Loading...</div>;
     }
 
+    const refresh = () => {
+        setActiveChannel(null);
+    }
+
     const sort: ChannelSort = { last_message_at: -1 };
     const filters: ChannelFilters = {
         type: "messaging",
@@ -78,14 +81,16 @@ function ChatContent(){
                     {/* Sidebar: Lista de chats */}
                     <aside className="chat-sidebar">
                         <p className="text-center text-xl py-3 font-bold">Chats</p>
-                        <ChannelList 
-                            filters={filters} 
-                            sort={sort} 
-                            options={options} 
-                            showChannelSearch
-                            setActiveChannelOnMount = {false}
-                            
-                        />
+                        <div onClick={refresh}>
+                            <ChannelList 
+                                filters={filters} 
+                                sort={sort} 
+                                options={options} 
+                                showChannelSearch
+                                setActiveChannelOnMount = {false}
+                                
+                            />
+                        </div>
                     </aside>
 
                     {/* Área de mensajes */}
@@ -93,7 +98,7 @@ function ChatContent(){
                         <Channel channel={activeChannel} EmojiPicker={EmojiPicker} emojiSearchIndex={SearchIndex}>
                             <Window>
                                 <ChannelHeader />
-                                <MessageList />
+                                    <MessageList />
                                 <MessageInput />
                             </Window>
                             <Thread />
