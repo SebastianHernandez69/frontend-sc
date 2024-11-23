@@ -41,7 +41,7 @@ const SideNav = () => {
                 href="/home"
                 className="flex flex-row space-x-3 items-center justify-center md:justify-start md:px-6 border-b border-zinc-200 h-12 w-full bg-blue-500 text-white"
                 >
-                <span className="h-7 w-7 bg-zinc-300 rounded-lg" />
+                <img src="/images/logo-sc.png" className="w-10" alt="" />
                 <span className="font-bold text-xl hidden md:flex">SharkCat</span>
                 </Link>
 

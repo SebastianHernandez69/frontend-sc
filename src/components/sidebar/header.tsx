@@ -3,7 +3,6 @@
 import React from "react";
 import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
-
 import useScroll from "@/hooks/use-scroll";
 import { cn } from "@/lib/utils";
 import DropdownProfile from "./drop-menu";
@@ -33,7 +32,7 @@ const Header = () => {
                             href="/home"
                             className="flex flex-row space-x-3 items-center justify-center md:hidden"
                         >
-                            <span className="h-7 w-7 bg-zinc-300 rounded-lg" />
+                            <img src="/images/logo-sc.png" className="w-10" alt="" />
                             <span className="font-bold text-xl flex text-white">SharkCat</span>
                         </Link>
                     </div>
