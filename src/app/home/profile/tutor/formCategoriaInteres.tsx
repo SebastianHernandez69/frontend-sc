@@ -5,7 +5,6 @@ import { Categoria, Materia, MateriaTutor } from "../../interfaces/categories";
 import { getCategories } from "../../home.api";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useMateriaContext } from "@/context/MateriaTutorContext";
 
@@ -18,7 +17,6 @@ export default function FormCategoriaMateria() {
     const [selectedMateria, setSelectedMateria] = useState<number | null>(null);
     const {register, handleSubmit, reset} = useForm<MateriaTutor>();
     const {addMateriaTutor} = useMateriaContext();
-    const router = useRouter();
 
     const alertAddMateriaSuccess = () => {
         toast.success("Materia agregada con exito", {
@@ -26,6 +24,11 @@ export default function FormCategoriaMateria() {
         });
     }
 
+    const alertExistMateria = () => {
+        toast.error("La materia ya esta en tu lista de interes", {
+            position: "top-right"
+        });
+    }
     // Llenar las categorias
     useEffect(()=>{
         const fetchCategorias =async () => {
@@ -75,20 +78,29 @@ export default function FormCategoriaMateria() {
                 body: JSON.stringify(materiaInteres)
             });
 
+            if(res.status === 409){
+                alertExistMateria();
+                return;
+            }
+
             if(!res.ok){
-                const errData = res.json();
-                console.error(errData);
+                console.error(res.text());
             }
 
             const data = await res.json();
 
             addMateriaTutor(data.materia);
             alertAddMateriaSuccess();
+            handleReset();
             reset();
-            router.refresh();
         } catch (error) {
             console.error("Error en la solicitud:", error);
         }
+    }
+
+    const handleReset = () => {
+        setSelectedCategory(null);
+        setSelectedMateria(null);
     }
 
     return(

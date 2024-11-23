@@ -214,15 +214,7 @@ export default function PerfilTutor() {
         {/* Sección de comentarios */}
         <div className="mt-4">
           <h3 className="font-medium text-gray-700">Comentarios:</h3>
-          {/* {comentarios.length > 0 ? (
-            comentarios.map((comentario, index) => (
-              <p key={index} className="text-sm text-gray-600 mt-1">
-                {comentario}
-              </p>
-            ))
-          ) : (
-            <p className="text-sm text-gray-500">Sin comentarios aún.</p>
-          )} */}
+          
         </div>
       </div>
 
@@ -407,17 +399,17 @@ export default function PerfilTutor() {
 
 
     </div>
-      <div className="grid gap-3 md:grid-cols-3 sm:gap-2 mt-5 lg:gap-4 w-full h-[30vh]">
-            <div className=" h-full shadow-md rounded">
+      <div className="grid gap-3 md:grid-cols-3 sm:gap-2 mt-5 lg:gap-4 w-full min-h-[30vh]">
+            <div className=" h-full bg-white shadow-md rounded">
                 <div className="w-auto ml-2 mt-2 lg:ml-4">
                     <p className="font-bold">Experiencia</p>
                 </div>
             </div>
-            <div className="shadow-md rounded">
+            <div className="shadow-md bg-white rounded">
                 <div className="w-auto ml-2 mt-2 lg:ml-4">
                     <p className="font-bold">Materias de interes</p>
                 </div>
-                <div className="ml-4 mb-2 text-sm">
+                <div className="pl-4 mb-2 text-sm">
                     {materias?.map((materia, index) => (
                         <p className="flex" key={index}>
                           <Dot/>
@@ -426,7 +418,7 @@ export default function PerfilTutor() {
                     ))}
                 </div>
             </div>
-            <div className="h-full shadow-md rounded">
+            <div className="h-full bg-white shadow-md rounded">
                 <div className="w-auto ml-2 mt-2 lg:ml-4">
                     <p className="font-bold">Conocimientos</p>
                 </div>

@@ -5,10 +5,13 @@ import { useEffect, useState } from "react";
 import { getQuestionsPupilo, getQuestionsByTutorInteres } from "./home.api";
 import { Question } from "./interfaces/question-interface";
 import { userPayload } from "./interfaces/userPayload-int";
+import { io } from 'socket.io-client';
 import QuestionCardDialog from './QuestionCardDialog';
 import RouteGuard from '@/components/routeGuard';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+const socket = io(apiUrl);
 
 export default function HomePage(){
     
@@ -31,33 +34,89 @@ export default function HomePage(){
         }
     };
     
+    useEffect(() => {
+        // Unir a todos los usuarios (pupilos y tutor) a una sala común
+        socket.emit('joinOfferQuestions');
+    
+        const handleChangeQuestionState = async ({ idPregunta, idOferta }: { idPregunta: number, idOferta: number }) => {
+            console.log(`Oferta ${idOferta} aceptada para la pregunta ${idPregunta}`);
+            await fetchAcceptedQuestions();
+            await fetchQuestions(userData?.rol);
+        };
+    
+        if (!socket.hasListeners('questionStateUpdate')) {
+            socket.on('questionStateUpdate', handleChangeQuestionState);
+        }
+    
+        // Verificar el rol del usuario para unirse a salas específicas
+        let handleRoleSpecificNotification: (() => Promise<void>) | null = null;
+    
+        if (userData) {
+            if (userData.rol === 2) {
+                socket.emit('joinRoom', userData.sub);
+    
+                handleRoleSpecificNotification = async () => {
+                    await fetchQuestions(userData.rol);
+                };
+    
+                if (!socket.hasListeners('newOfferNotification')) {
+                    socket.on('newOfferNotification', handleRoleSpecificNotification);
+                }
+            } else if (userData.rol === 1) {
+                socket.emit('joinNewQuestion');
+    
+                handleRoleSpecificNotification = async () => {
+                    await fetchQuestions(userData.rol);
+                };
+    
+                if (!socket.hasListeners('newQuestionNotification')) {
+                    socket.on('newQuestionNotification', handleRoleSpecificNotification);
+                }
+            }
+        }
+    
+        // Función de limpieza
+        return () => {
+            socket.off('questionStateUpdate', handleChangeQuestionState);
+    
+            if (userData) {
+                if (userData.rol === 2) {
+                    socket.off('newOfferNotification', handleRoleSpecificNotification!);
+                } else if (userData.rol === 1) {
+                    socket.off('newQuestionNotification', handleRoleSpecificNotification!);
+                }
+            }
+        };
+    }, [userData]);
+    
+
     // Obtener preguntas con oferta aceptada de tutor
     useEffect(() => {
         try {
             if(token){
-                const fetchAcceptedQuestions = async () => {
-                    const res = await fetch(`${apiUrl}/user/pregunta/tutor/oferta-aceptada`,{
-                        method: "GET",
-                        headers:{
-                            "Content-type": "application/json",
-                            "Authorization": `Bearer ${token}`
-                        }
-                    });
-
-                    if(!res.ok){
-                        console.error("Error al obtener preguntas aceptadas");
-                    }
-
-                    const data: Question[] = await res.json();
-                    setAcceptedQuestions(data);
-                }
-
                 fetchAcceptedQuestions();
             }
         } catch (error) {
             console.error(`Error al obtener las preguntas aceptadas ${error}`);
         }
     }, [token]);
+
+    const fetchAcceptedQuestions = async () => {
+        const res = await fetch(`${apiUrl}/user/pregunta/tutor/oferta-aceptada`,{
+            method: "GET",
+            headers:{
+                "Content-type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if(!res.ok){
+            console.error("Error al obtener preguntas aceptadas");
+        }
+
+        const data: Question[] = await res.json();
+        setAcceptedQuestions(data);
+    }
 
     // refrescar
     const updateQuestions = async () => {
