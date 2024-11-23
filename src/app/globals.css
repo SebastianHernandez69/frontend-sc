@@ -115,7 +115,6 @@ body {
   margin: 0;
   font-family: Arial, sans-serif;
   overflow-x: hidden;
-  background: linear-gradient(120deg, #89f7fe, #66a6ff);
   animation: gradientBackground 10s infinite;
 }
 
@@ -163,7 +162,6 @@ td:last-child {
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: linear-gradient(120deg, #89f7fe, #66a6ff);
   animation: gradientBackground 10s infinite;
 }
 

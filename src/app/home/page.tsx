@@ -111,7 +111,7 @@ export default function HomePage(){
         });
 
         if(!res.ok){
-            console.error("Error al obtener preguntas aceptadas");
+            console.log("Error al obtener preguntas aceptadas");
         }
 
         const data: Question[] = await res.json();
@@ -162,7 +162,7 @@ export default function HomePage(){
                 {userData?.rol === 1 && acceptedQuestions.length > 0 && (
                     <>
                         <div className="flex justify-center p-4 text-2xl">OFERTAS ACEPTADAS</div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 justify-center">
+                        <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3 gap-4 justify-center">
                             {acceptedQuestions.map((question) => (
                                 <QuestionCardDialog
                                     key={question.idPregunta}
@@ -177,7 +177,7 @@ export default function HomePage(){
                 {userData?.rol === 2 && acceptedQuestions.length > 0 && (
                     <>
                         <div className="flex justify-center p-4 text-2xl">PREGUNTAS EN PROCESO</div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 justify-center">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-center">
                             {acceptedQuestions.map((question) => (
                                 <QuestionCardDialog
                                     key={question.idPregunta}
@@ -199,7 +199,7 @@ export default function HomePage(){
     
                 {/* CARD */}
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 justify-center">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-center">
                     {questions.length > 0 ? (
                     questions.map((question) => (    
                         <QuestionCardDialog 
