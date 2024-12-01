@@ -103,7 +103,6 @@ const HeaderMobile = () =>{
                     );
                 })}
               <MenuItem>
-              <div className='w-full border-t mb-2'></div>
                 <Link 
                   href={"/"}
                   className='flex w-full font-bold text-2xl'

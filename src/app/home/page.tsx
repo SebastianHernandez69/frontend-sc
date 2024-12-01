@@ -11,7 +11,7 @@ import RouteGuard from '@/components/routeGuard';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-const socket = io(apiUrl);
+const socket = io(`${apiUrl}`);
 
 export default function HomePage(){
     
@@ -199,7 +199,7 @@ export default function HomePage(){
     
                 {/* CARD */}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-center">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-center">
                     {questions.length > 0 ? (
                     questions.map((question) => (    
                         <QuestionCardDialog 

@@ -7,6 +7,7 @@ interface QuestionOffersProps {
     userData: { rol: number } | null;
     selectedQuestion: {
         idPregunta: number;
+        idUsuarioPupilo: number;
         ofertaresolucion?: Offer[];
     } | null;
     updateQuestions: () => void;
@@ -15,9 +16,10 @@ interface QuestionOffersProps {
 interface OfferSectionProps {
     title: string;
     offers: Offer[];
+    idPupilo: number;
 }
 
-const OfferSection: React.FC<OfferSectionProps> = ({ title, offers }) => (
+const OfferSection: React.FC<OfferSectionProps> = ({ title, offers, idPupilo }) => (
     <>
         <p className="text-md font-semibold text-center">{title}</p>
         <div className="w-full border my-2"></div>
@@ -27,6 +29,7 @@ const OfferSection: React.FC<OfferSectionProps> = ({ title, offers }) => (
                     <OfferCard 
                         key={oferta.idOferta}
                         offer={oferta}
+                        idUsuarioPupilo={idPupilo}
                     />
                 ))}
             </div>
@@ -41,10 +44,10 @@ const QuestionOffers: React.FC<QuestionOffersProps> = ({ userData, selectedQuest
     return (
         <>
             {userData?.rol === 2 && hasOffers && (
-                <OfferSection title="Ofertas de solución" offers={offers} />
+                <OfferSection title="Ofertas de solución" offers={offers} idPupilo={selectedQuestion.idUsuarioPupilo}/>
             )}
             {userData?.rol === 1 && hasOffers && (
-                <OfferSection title="Tu oferta" offers={offers} />
+                <OfferSection title="Tu oferta" offers={offers} idPupilo={selectedQuestion.idUsuarioPupilo} />
             )}
             {userData?.rol === 1 && !hasOffers && (
                 <>

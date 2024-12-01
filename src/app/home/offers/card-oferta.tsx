@@ -9,12 +9,13 @@ import { jwtDecode } from 'jwt-decode';
 import RouteGuard from '@/components/routeGuard';
 
 type CompleteOfferCardProp = {
-    offer: Offer
+    offer: Offer;
+    idUsuarioPupilo: number;
 }
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-const OfferCard: React.FC<CompleteOfferCardProp> = ({offer}) => {
+const OfferCard: React.FC<CompleteOfferCardProp> = ({offer, idUsuarioPupilo}) => {
 
     const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
     const [isOpen, setIsOpen] = useState(false);
@@ -30,11 +31,6 @@ const OfferCard: React.FC<CompleteOfferCardProp> = ({offer}) => {
         setSelectedOffer(offer);
         setIsOpen(true);
     }
-    useEffect(() => {
-        if (selectedOffer) {
-            console.log("Oferta seleccionada:", selectedOffer);
-        }
-    }, [selectedOffer]);
 
     const handleAcceptOffer = async (idOferta: number) => {
         try {
@@ -52,11 +48,38 @@ const OfferCard: React.FC<CompleteOfferCardProp> = ({offer}) => {
             } else {
                 console.log("Estado de la pregunta actualizado correctamente");
                 setIsOpen(false);
-
             }
 
         } catch (error) {
             console.error(`Error handleAcceptOffer ${error}`);
+        }
+    }
+
+    // Answere question
+    const handleAnswerQuestion = async (idPregunta: number, idPupilo: number) => {
+        try {
+
+            console.log(`ID del pupilo que pregunta: ${idPupilo}`);
+
+            const data = {
+                idPregunta: idPregunta
+            }
+
+            const res = await fetch(`${apiUrl}/question/answere-question`,{
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${access_token}`
+                },
+                body: JSON.stringify(data)
+            });
+
+            if(!res.ok){
+                console.error(`Error al cambiar estado de la pregunta`);
+            }
+
+        } catch (error) {
+            console.error(`Error al contestar la pregunta: ${error}`);
         }
     }
 
@@ -172,6 +195,13 @@ const OfferCard: React.FC<CompleteOfferCardProp> = ({offer}) => {
                                         {offer.estadoOfertaSolucion?.idEstadoOferta === 1 && (
                                             <Button onClick={() => handleAcceptOffer(offer.idOferta)}>Aceptar</Button>
                                         )}
+                                    </div>
+                                )}
+                                {userData?.rol === 1 && offer.estadoOfertaSolucion.idEstadoOferta === 3 && (
+                                    <div className='flex w-full justify-center'>
+                                        <Button onClick={() => handleAnswerQuestion(offer.idPregunta, idUsuarioPupilo)}>
+                                            Marcar como contestada
+                                        </Button>
                                     </div>
                                 )}
                             </DialogContent>
