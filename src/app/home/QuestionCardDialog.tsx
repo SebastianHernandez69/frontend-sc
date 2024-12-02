@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Question } from "./interfaces/question-interface";
 import { userPayload } from "./interfaces/userPayload-int";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,15 +18,11 @@ interface QuestionCardDialogProps {
 const QuestionCardDialog: React.FC<QuestionCardDialogProps> = ({ question, userData, updateQuestions }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-    const [toastMessage, setToastMessage] = useState<string | null>(null); // Mensaje de notificación
-    const [isLoading, setIsLoading] = useState(false); // Barra de progreso
 
     // Usar el hook para la eliminación de la pregunta
-    const { deleteQuestion, isDeleting, error } = useDeleteQuestion({
+    const { deleteQuestion, isDeleting } = useDeleteQuestion({
         updateQuestions,
         accessToken: sessionStorage.getItem("access_token") || '',
-        setSuccessMessage: setToastMessage, // Pasar el mensaje al estado de la notificación
-        setIsLoading,
     });
 
     const handleCardClick = () => {
@@ -34,11 +30,6 @@ const QuestionCardDialog: React.FC<QuestionCardDialogProps> = ({ question, userD
     };
 
     const handleDelete = async () => {
-        if (question.estado === "aceptada" || question.estado === "contestada") {
-            console.log("No se puede eliminar la pregunta porque está en EN PROCESO");
-            return;
-        }
-
         // Llamar al hook de eliminación
         await deleteQuestion(question.idPregunta);
         if (!isDeleting) {
@@ -47,20 +38,7 @@ const QuestionCardDialog: React.FC<QuestionCardDialogProps> = ({ question, userD
     };
 
     // Verificar si el usuario es tutor (1) o pupilo (2)
-    const isTutor = userData?.rol === 1;  // Si el rol es 1, es tutor
     const isPupilo = userData?.rol === 2; // Si el rol es 2, es pupilo
-
-    // Desaparecer la notificación después de 3 segundos
-    useEffect(() => {
-        if (toastMessage) {
-            const timer = setTimeout(() => {
-                setToastMessage(null); // Ocultar el mensaje después de 3 segundos
-            }, 3000);
-
-            // Limpiar el timeout en caso de que el componente se desmonte
-            return () => clearTimeout(timer);
-        }
-    }, [toastMessage]);
 
     return (
         <>
@@ -139,31 +117,9 @@ const QuestionCardDialog: React.FC<QuestionCardDialogProps> = ({ question, userD
                                 </div>
                             </div>
                         )}
-
-                        {/* Barra de progreso */}
-                        {isLoading && (
-                            <div className="absolute bottom-0 left-0 right-0 bg-gray-200 h-1">
-                                <div className="bg-blue-500 h-full" style={{ width: "100%" }}></div>
-                            </div>
-                        )}
                     </DialogContent>
                 </DialogPortal>
             </Dialog>
-            
-            {/* Notificación o toast */}
-            {toastMessage && (
-            <div className="fixed top-16 right-4 bg-green-500 text-white p-4 rounded-md shadow-lg w-[400px]">
-                {/* Mensaje */}
-                <div className="flex items-center justify-between">
-                    <span>{toastMessage}</span>
-                    {/* Emojis animados */}
-                    <span className="animate-pulse text-xl">🌀</span>
-                </div>
-                
-                {/* Barra roja debajo del mensaje */}
-                <div className="w-full h-2 mt-2 bg-red-500 animate-pulse"></div>
-            </div>
-        )}
 
         </>
     );

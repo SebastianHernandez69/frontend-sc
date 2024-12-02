@@ -1,20 +1,18 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 interface UseDeleteQuestionProps {
     updateQuestions: () => Promise<void>;
     accessToken: string;
-    setSuccessMessage: (message: string) => void;
-    setIsLoading: (loading: boolean) => void;
 }
 
-const useDeleteQuestion = ({ updateQuestions, accessToken, setSuccessMessage, setIsLoading }: UseDeleteQuestionProps) => {
+const useDeleteQuestion = ({ updateQuestions, accessToken }: UseDeleteQuestionProps) => {
     const [isDeleting, setIsDeleting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const deleteQuestion = async (idPregunta: number) => {
         if (!accessToken) {
             setError("Usuario no autenticado");
-            setSuccessMessage("Error: Usuario no autenticado");
             return;
         }
 
@@ -31,23 +29,25 @@ const useDeleteQuestion = ({ updateQuestions, accessToken, setSuccessMessage, se
                 body: JSON.stringify({ idPregunta }),
             });
 
-            // Si la respuesta no es correcta, lanza un error
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || "Error al eliminar la pregunta.");
+            if(response.status === 409){
+                toast.warning("Pregunta ya contestada o en proceso", {
+                    position: "top-right"
+                });
+                return;
             }
 
-            // Mostrar mensaje de éxito
-            setSuccessMessage("Eliminando Pregunta.");
+            // Si la respuesta no es correcta, lanza un error
+            if (!response.ok) {
+                throw new Error(`Error al eliminar la pregunta: ${response.status}`);
+            }
 
-            // Esperar 3 segundos para que el mensaje sea visible antes de actualizar
-            setTimeout(async () => {
-                await updateQuestions();  // Actualizamos la lista de preguntas
-            }, 3000); // 3 segundos de retraso
+            toast.success('Pregunta eliminada con exito', {
+                position: "top-right"
+            });
+            await updateQuestions();
 
         } catch (error: any) {
-            setError(error.message || "Error desconocido");
-            setSuccessMessage(error.message || "Error desconocido");
+            console.error(`Error al eliminar la pregunta: ${error}`)
         } finally {
             setIsDeleting(false);
         }
