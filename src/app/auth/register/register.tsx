@@ -47,6 +47,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function Register() {
   const [step, setStep] = useState(1);
+  const [success, setSuccess] = useState(false);
   const [message, setMessage] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [imgPerfil, setImgPerfil] = useState<File | null>(null);
@@ -127,6 +128,7 @@ export default function Register() {
       }
 
       setMessage("Registro exitoso. Ahora ingrese el código de verificación.");
+      setSuccess(true);
       setShowPopup(true);
       setStep(4);
     } catch (error) {
@@ -324,9 +326,16 @@ export default function Register() {
             <div className="bg-white p-6 rounded-lg shadow-lg space-y-4">
               <h2 className="text-gray-700 font-semibold">Mensaje</h2>
               <p>{message}</p>
-              <Button onClick={() => setShowPopup(false)} className="w-full bg-red-500 hover:bg-red-600">
-                Cerrar
-              </Button>
+              {success && (
+                <Button onClick={() => setShowPopup(false)} className="w-full bg-green-500 hover:bg-green-600">
+                  Cerrar
+                </Button>
+              )}
+              {!success && (
+                <Button onClick={() => setShowPopup(false)} className="w-full bg-red-500 hover:bg-red-600">
+                  Cerrar
+                </Button>
+              )}
             </div>
           </div>
         )}

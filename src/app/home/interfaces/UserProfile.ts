@@ -1,4 +1,5 @@
 export interface UserProfile {
+    idUsuario?:number;
     nombre: {
         idNombre: number;
         primerNombre: string;
@@ -28,4 +29,9 @@ export interface UserProfile {
         };
     }[];
 
+}
+
+export interface ValoracionUser{
+    promedio: number;
+    cant: number;
 }

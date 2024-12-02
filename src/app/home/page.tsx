@@ -11,7 +11,7 @@ import RouteGuard from '@/components/routeGuard';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-const socket = io(apiUrl);
+const socket = io(`${apiUrl}`);
 
 export default function HomePage(){
     
@@ -48,42 +48,52 @@ export default function HomePage(){
             socket.on('questionStateUpdate', handleChangeQuestionState);
         }
     
-        // Verificar el rol del usuario para unirse a salas específicas
-        let handleRoleSpecificNotification: (() => Promise<void>) | null = null;
-    
         if (userData) {
             if (userData.rol === 2) {
                 socket.emit('joinRoom', userData.sub);
     
-                handleRoleSpecificNotification = async () => {
-                    await fetchQuestions(userData.rol);
+                const handleNotification = async () => {
+                    try {
+                        console.log('nueva oferta o pregunta contestada');
+                        await fetchQuestions(userData.rol);
+                    } catch (error) {
+                        console.error('Error al manejar notificaciones:', error);
+                    }
                 };
     
                 if (!socket.hasListeners('newOfferNotification')) {
-                    socket.on('newOfferNotification', handleRoleSpecificNotification);
+                    socket.on('newOfferNotification', handleNotification);
+                }
+    
+                if (!socket.hasListeners('AnsQuestionNotification')) {
+                    socket.on('AnsQuestionNotification', handleNotification);
                 }
             } else if (userData.rol === 1) {
                 socket.emit('joinNewQuestion');
     
-                handleRoleSpecificNotification = async () => {
-                    await fetchQuestions(userData.rol);
+                const handleNotification = async () => {
+                    try {
+                        await fetchQuestions(userData.rol);
+                    } catch (error) {
+                        console.error('Error al manejar notificaciones:', error);
+                    }
                 };
     
                 if (!socket.hasListeners('newQuestionNotification')) {
-                    socket.on('newQuestionNotification', handleRoleSpecificNotification);
+                    socket.on('newQuestionNotification', handleNotification);
                 }
             }
         }
     
-        // Función de limpieza
         return () => {
             socket.off('questionStateUpdate', handleChangeQuestionState);
     
             if (userData) {
                 if (userData.rol === 2) {
-                    socket.off('newOfferNotification', handleRoleSpecificNotification!);
+                    socket.off('newOfferNotification');
+                    socket.off('AnsQuestionNotification');
                 } else if (userData.rol === 1) {
-                    socket.off('newQuestionNotification', handleRoleSpecificNotification!);
+                    socket.off('newQuestionNotification');
                 }
             }
         };
@@ -111,7 +121,7 @@ export default function HomePage(){
         });
 
         if(!res.ok){
-            console.error("Error al obtener preguntas aceptadas");
+            console.log("Error al obtener preguntas aceptadas");
         }
 
         const data: Question[] = await res.json();
@@ -162,7 +172,7 @@ export default function HomePage(){
                 {userData?.rol === 1 && acceptedQuestions.length > 0 && (
                     <>
                         <div className="flex justify-center p-4 text-2xl">OFERTAS ACEPTADAS</div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 justify-center">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-center">
                             {acceptedQuestions.map((question) => (
                                 <QuestionCardDialog
                                     key={question.idPregunta}
@@ -177,7 +187,7 @@ export default function HomePage(){
                 {userData?.rol === 2 && acceptedQuestions.length > 0 && (
                     <>
                         <div className="flex justify-center p-4 text-2xl">PREGUNTAS EN PROCESO</div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 justify-center">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-center">
                             {acceptedQuestions.map((question) => (
                                 <QuestionCardDialog
                                     key={question.idPregunta}
@@ -199,7 +209,7 @@ export default function HomePage(){
     
                 {/* CARD */}
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 justify-center">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-center">
                     {questions.length > 0 ? (
                     questions.map((question) => (    
                         <QuestionCardDialog 

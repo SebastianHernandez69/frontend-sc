@@ -36,6 +36,10 @@ const sidebar = {
     },
   };
 
+  const handleLogOut = () => {
+    sessionStorage.clear();
+  }
+
 const HeaderMobile = () =>{
     const [userData, setUserData] = useState<userPayload | null>(null);
     const pathname = usePathname();
@@ -98,7 +102,15 @@ const HeaderMobile = () =>{
                       </div>
                     );
                 })}
-
+              <MenuItem>
+                <Link 
+                  href={"/"}
+                  className='flex w-full font-bold text-2xl'
+                  onClick={() => handleLogOut()}
+                >
+                  Cerrar sesion
+                </Link>
+              </MenuItem>
             </motion.ul>
             <MenuToggle toggle={toggleOpen} />
         </motion.nav>

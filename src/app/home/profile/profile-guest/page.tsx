@@ -5,6 +5,8 @@ import { Dot } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import { UserProfile } from "../../interfaces/UserProfile";
+import Comments from "@/components/comments";
+import Valoration from "@/components/valorationStars";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -27,11 +29,27 @@ const GuestContent = () => {
           throw new Error("Error al obtener los datos del perfil");
         }
 
+        const resValTutor = await fetch(`${apiUrl}/valoracion/get/${idTutor}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+
+        if(!resValTutor.ok){
+          throw new Error("Error la valoracion del tutor");
+        }
+
         const data: UserProfile = await response.json();
+
         setProfileData(data);
       } catch (error) {
         console.error(`Error al obtener la informacion del usuario: ${error}`);
       }
+
+      
+
+
     };
     fetchProfileData();
   }, [idTutor]);  // Añadir idTutor como dependencia
@@ -48,37 +66,29 @@ const GuestContent = () => {
 
   if (!profileData) return <div>Loading...</div>;
 
-  const renderStars = () => {
-    const stars = [];
-    for (let i = 1; i <= profileData.valoracion; i++) {
-      stars.push(
-        <span key={i} className={`text-${i <= profileData.valoracion ? "yellow" : "gray"}-500`}>
-          ★
-        </span>
-      );
-    }
-    return stars;
-  };
-
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-xl font-bold">Perfil del tutor</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col space-y-4">
-        <div className="sm:grid grid-cols-1 sm:grid-cols-3 gap-2 lg:gap-4 w-full">
-          <div className="shadow rounded min-h-[25vh] sm:min-h-[40vh]">
+        <div className="sm:grid grid-cols-1 sm:grid-cols-5 gap-2 lg:gap-4 w-full">
+          <div className="shadow col-start-1 col-end-3 rounded min-h-[25vh] sm:min-h-[40vh]">
             <div className="flex justify-center sm:mt-6">
-              <img src={profileData?.fotoPerfil} className="mt-5 rounded-full w-[10vh] sm:w-[16vh] sm:h-[16vh]" alt="" />
+              <img src={profileData?.fotoPerfil} className="mt-5 rounded-full w-[25vh] sm:w-[16vh] sm:h-[16vh]" alt="" />
             </div>
             <div className="flex flex-col text-sm mt-5 text-center">
               <p className="font-thin">{profileData?.nombre.primerNombre} {profileData?.nombre.primerApellido}</p>
               <p className="font-light">{profileData?.correo}</p>
-              <div className="flex justify-center space-x-1 mt-2">{renderStars()}</div> 
+              <p className=" pt-5">Valoracion</p>
+              <Valoration idUsuario={Number(idTutor)}></Valoration>
+
+              <p>Comentarios</p>
+              <Comments idUsuario={Number(idTutor)}></Comments>
             </div>
           </div>
 
-          <div className="col-start-2 col-end-4 h-full rounded py-3 mt-4 sm:mt-0 flex items-center justify-center shadow">
+          <div className="col-start-3 col-end-6 h-full rounded py-3 mt-4 sm:mt-0 flex items-center justify-center shadow">
             <div className="flex flex-col space-y-2 sm:space-y-5 text-sm">
               <div className="flex mx-3 w-auto">
                 <p>Nombre: </p>

@@ -4,10 +4,15 @@ import React, { createContext, useEffect, useContext, useState, ReactNode } from
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
+interface Materia {
+    idMateria: number;
+    materia: string
+}
+
 interface MateriaContextType{
-    materias: string[] | null;
+    materiasTutor: Materia[] | null;
     loading: boolean,
-    addMateriaTutor: (newMateria: string) => void;
+    addMateriaTutor: (newMateria: Materia) => void;
 }
 
 const MateriaContext = createContext<MateriaContextType | undefined>(undefined);
@@ -17,12 +22,12 @@ interface MateriaProviderProps {
 }
 
 export const MateriaProvider = ({children}: MateriaProviderProps) => {
-    const [materias, setMaterias] = useState<string[] | null> (null);
+    const [materiasTutor, setMaterias] = useState<Materia[] | null> (null);
     const [loading, setLoading] = useState(true);
 
-    const addMateriaTutor = (newMateria: string) => {
-        if(materias){
-            setMaterias([...materias, newMateria])
+    const addMateriaTutor = (newMateria: Materia) => {
+        if(materiasTutor){
+            setMaterias([...materiasTutor, newMateria])
         }
     }
 
@@ -47,7 +52,7 @@ export const MateriaProvider = ({children}: MateriaProviderProps) => {
             }
 
             const data = await res.json();
-            setMaterias(data?.materias || []);
+            setMaterias(data || []);
         } catch (error) {
             console.error(`Error al obtener materias del usuario: ${error}`);
             setMaterias([]);
@@ -57,14 +62,14 @@ export const MateriaProvider = ({children}: MateriaProviderProps) => {
     }
 
     useEffect(() => {
-        if(!materias || loading){
+        if(!materiasTutor || loading){
             fetchMaterias();
         }
-    }, [materias, loading]);
+    }, [materiasTutor, loading]);
 
     return (
         <>
-            <MateriaContext.Provider value={{materias, loading, addMateriaTutor}}>
+            <MateriaContext.Provider value={{materiasTutor, loading, addMateriaTutor}}>
                 {children}
             </MateriaContext.Provider>
         </>

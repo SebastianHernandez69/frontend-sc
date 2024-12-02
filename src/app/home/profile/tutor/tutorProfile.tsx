@@ -8,6 +8,10 @@ import { Dot } from "lucide-react";
 import FormCategoriaMateria from "./formCategoriaInteres";
 import { useUserContext } from "@/context/UserContext";
 import { useMateriaContext } from "@/context/MateriaTutorContext";
+import Comments from "@/components/comments";
+import { userPayload } from "../../interfaces/userPayload-int";
+import { jwtDecode } from "jwt-decode";
+import Valoration from "@/components/valorationStars";
 
 interface PerfilTutor {
   primerNombre?: string;
@@ -44,10 +48,11 @@ export default function PerfilTutor() {
   const [mensaje, setMensaje] = useState("Cargando detalles del perfil...");
   const [token, setToken] = useState<string | null>(null);
   const [esEditable, setEsEditable] = useState(false);
-  const [valoracion, setValoracion] = useState(4); // Valoración del tutor
+  const [userData, setUserData] = useState<userPayload | null>(null);
+
   // contexto de usuario
   const {user, updateProfilePhoto} = useUserContext();
-  const {materias} = useMateriaContext();
+  const {materiasTutor} = useMateriaContext();
   // Estados separados para cada sección
   const [conocimientos, setConocimientos] = useState<Conocimiento[]>([]);
   const [experiencias, setExperiencias] = useState<Experiencia[]>([]);
@@ -65,6 +70,9 @@ export default function PerfilTutor() {
       }
 
       setToken(access_token);
+      const data: userPayload = jwtDecode(access_token);
+
+      setUserData(data);
 
       fetch(`${apiUrl}/user/profile`, {
         method: "GET",
@@ -87,7 +95,6 @@ export default function PerfilTutor() {
           setValue("segundoApellido", data.nombre.segundoApellido);
           setValue("correo", data.correo);
           setValue("edad", data.edad);
-          setValoracion(data.valoracion);
           setNombreMostrado(
             `${data.nombre.primerNombre || ""} ${data.nombre.primerApellido || ""}`.trim()
           );
@@ -173,19 +180,6 @@ export default function PerfilTutor() {
     }
   };
 
-  // Función para renderizar las estrellas
-  const renderStars = () => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <span key={i} className={`text-${i <= valoracion ? "yellow" : "gray"}-500`}>
-          ★
-        </span>
-      );
-    }
-    return stars;
-  };
-
   if (mensaje) {
     return <p>{mensaje}</p>;
   }
@@ -194,7 +188,7 @@ export default function PerfilTutor() {
     <>
     <div className="sm:flex sm:space-x-6 lg:flex-wrap">
       {/* Card para la foto de perfil */}
-      <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-md sm:w-60">
+      <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-md sm:w-60 lg:w-[50vh]">
         <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
           
             <img src={user?.fotoPerfil ?? undefined} alt="Foto de perfil" className="w-full h-full object-cover" />
@@ -209,12 +203,13 @@ export default function PerfilTutor() {
         <p className="text-sm text-gray-500">{correoMostrado}</p>
 
         {/* Estrellas de valoración */}
-        <div className="flex space-x-1 mt-2">{renderStars()}</div>
+        <p className="pt-4">valoracion</p>
+        <Valoration idUsuario={userData?.sub}></Valoration>
 
         {/* Sección de comentarios */}
+          <p className="font-medium ">Comentarios</p>
         <div className="mt-4">
-          <h3 className="font-medium text-gray-700">Comentarios:</h3>
-          
+          <Comments idUsuario={userData?.sub}></Comments>
         </div>
       </div>
 
@@ -410,10 +405,10 @@ export default function PerfilTutor() {
                     <p className="font-bold">Materias de interes</p>
                 </div>
                 <div className="pl-4 mb-2 text-sm">
-                    {materias?.map((materia, index) => (
+                    {materiasTutor?.map((materia, index) => (
                         <p className="flex" key={index}>
                           <Dot/>
-                          {materia}
+                          {materia.materia}
                         </p>
                     ))}
                 </div>

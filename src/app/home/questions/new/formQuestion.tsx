@@ -102,10 +102,6 @@ export default function FormQuestion(){
         files.map(file => {
             formData.append("files", file);
         });
-        console.log("Contenido de FormData:");
-        for (const pair of formData.entries()) {
-            console.log(`${pair[0]}: ${pair[1]}`);
-        }
         //JWT
 
         const access_token = sessionStorage.getItem("access_token");

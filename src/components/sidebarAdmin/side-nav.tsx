@@ -21,7 +21,7 @@ const SideNav = () => {
 
                 <div className="flex flex-col space-y-2 md:px-6">
                     {SIDENAV_ITEMS.map((item, idx) => {
-                        return <MenuItem key={idx + 10} item={item} />;
+                        return <MenuItem key={idx} item={item} />;
                     })}
                 </div>
             </div>

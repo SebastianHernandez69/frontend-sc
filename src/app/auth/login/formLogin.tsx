@@ -90,8 +90,10 @@ export default function FormLogin() {
         onSubmit={handleSubmit(onSubmit)}
         className="w-[45vh] sm:w-[60vh] max-w-md bg-white p-6 rounded-lg shadow-md space-y-4"
       >
+        <div className="flex justify-center w-full">
+          <img src="/images/logo-sc.png" className="w-[25vh]" alt="" />
+        </div>
         <div className="flex justify-center font-bold text-xl">Login</div>
-
         <div>
           <Input placeholder="Correo" {...register("correo")} />
           {errors.correo && (

@@ -64,6 +64,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             </div>
                         </Link>
                     </li>
+                    <li>
+                        <Link href="/admin/experiencia">
+                            <div className="flex items-center px-4 py-2 hover:bg-blue-700 rounded-lg transition-all cursor-pointer">
+                                <FaPlusCircle size={24} />
+                                {!isCollapsed && <span className="ml-4">Intituciones y puestos</span>}
+                            </div>
+                        </Link>
+                    </li>
                     {/* Opción de Cerrar Sesión */}
                     <li>
                         <div
