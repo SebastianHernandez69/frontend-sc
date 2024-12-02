@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 import { Question } from "./interfaces/question-interface";
 import { userPayload } from "./interfaces/userPayload-int";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +7,7 @@ import { DialogOverlay, DialogPortal } from "@radix-ui/react-dialog";
 import { DialogHeader } from "@/components/ui/dialog";
 import Carousel from "@/components/ui/carousel";
 import QuestionOffers from "./offers/questionOffers";
+import useDeleteQuestion from "../../hooks/useDeleteQuestion"; // Importar el hook
 
 interface QuestionCardDialogProps {
     question: Question;
@@ -14,23 +15,36 @@ interface QuestionCardDialogProps {
     updateQuestions: () => Promise<void>;
 }
 
-const QuestionCardDialog:React.FC<QuestionCardDialogProps> = ({ question, userData, updateQuestions }) => {
-    
+const QuestionCardDialog: React.FC<QuestionCardDialogProps> = ({ question, userData, updateQuestions }) => {
     const [isOpen, setIsOpen] = useState(false);
-    
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+    // Usar el hook para la eliminación de la pregunta
+    const { deleteQuestion, isDeleting } = useDeleteQuestion({
+        updateQuestions,
+        accessToken: sessionStorage.getItem("access_token") || '',
+    });
+
     const handleCardClick = () => {
         setIsOpen(true);
     };
 
+    const handleDelete = async () => {
+        // Llamar al hook de eliminación
+        await deleteQuestion(question.idPregunta);
+        if (!isDeleting) {
+            setIsOpen(false); // Cerrar el modal después de eliminar
+        }
+    };
+
+    // Verificar si el usuario es tutor (1) o pupilo (2)
+    const isPupilo = userData?.rol === 2; // Si el rol es 2, es pupilo
+
     return (
         <>
             <Card onClick={handleCardClick} className="m-2 overflow-hidden shadow cursor-pointer relative hover:shadow-xl">
-                {/* <div
-                    className={`absolute w-full h-3 px-2 py-1 text-xs font-bold text-white rounded-t bg-red-300`}
-                >
-                </div> */}
                 <CardHeader>
-                    <CardTitle className="flex justify-between">
+                    <CardTitle className="flex justify-between items-center">
                         {question.titulo}
                         <span className="text-xs">{question.materia.materia}</span>
                     </CardTitle>
@@ -43,7 +57,7 @@ const QuestionCardDialog:React.FC<QuestionCardDialogProps> = ({ question, userDa
                 </CardContent>
             </Card>
 
-            {/* Question details */}
+            {/* Modal con detalles de la pregunta */}
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogPortal>
                     <DialogOverlay className="fixed inset-0 bg-black bg-opacity-50" />
@@ -72,11 +86,43 @@ const QuestionCardDialog:React.FC<QuestionCardDialogProps> = ({ question, userDa
                         <div className="w-full border my-2"></div>
                         
                         <QuestionOffers userData={userData} selectedQuestion={question} updateQuestions={updateQuestions} />
+
+                        {/* Botón de eliminar solo si el usuario es pupilo y la pregunta no está aceptada */}
+                        {isPupilo && question.estado !== "aceptada" && (
+                            <button
+                                onClick={() => setShowDeleteConfirm(true)} // Muestra la confirmación
+                                className="mt-4 bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transition duration-200"
+                            >
+                                Eliminar
+                            </button>
+                        )}
+
+                        {/* Confirmación de eliminación */}
+                        {showDeleteConfirm && (
+                            <div className="mt-4 p-4 border border-red-500 rounded-lg">
+                                <p>¿Estás seguro de que deseas eliminar esta pregunta?</p>
+                                <div className="flex gap-4 mt-4">
+                                    <button
+                                        onClick={handleDelete}
+                                        className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition duration-200"
+                                    >
+                                        Sí, eliminar
+                                    </button>
+                                    <button
+                                        onClick={() => setShowDeleteConfirm(false)} // Cierra la confirmación sin eliminar
+                                        className="bg-gray-500 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition duration-200"
+                                    >
+                                        No, cancelar
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                     </DialogContent>
                 </DialogPortal>
             </Dialog>
+
         </>
-    )
-}
+    );
+};
 
 export default QuestionCardDialog;
