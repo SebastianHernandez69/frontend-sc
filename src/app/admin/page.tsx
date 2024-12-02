@@ -48,6 +48,17 @@ export default function NewPage() {
                     </div>
                 </Link>
 
+                {/* Tarjeta para Agregar Categorías */}
+                <Link href="/admin/experiencia">
+                    <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center hover:shadow-2xl transition-shadow duration-300 cursor-pointer">
+                        <FaPlusCircle size={48} className="text-green-500 mb-4" />
+                        <h2 className="text-xl font-bold">Instituciones y puestos</h2>
+                        <p className="text-gray-600 text-center mt-2">
+                            Agrega instituciones y puestos para editar perfil
+                        </p>
+                    </div>
+                </Link>
+
                 {/* Tarjeta para Cerrar Sesión */}
                 <div
                     onClick={handleLogout}

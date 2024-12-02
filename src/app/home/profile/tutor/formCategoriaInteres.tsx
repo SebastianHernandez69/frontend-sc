@@ -89,7 +89,7 @@ export default function FormCategoriaMateria() {
 
             const data = await res.json();
 
-            addMateriaTutor(data.materia);
+            addMateriaTutor(data);
             alertAddMateriaSuccess();
             handleReset();
             reset();

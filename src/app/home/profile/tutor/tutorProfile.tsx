@@ -52,7 +52,7 @@ export default function PerfilTutor() {
 
   // contexto de usuario
   const {user, updateProfilePhoto} = useUserContext();
-  const {materias} = useMateriaContext();
+  const {materiasTutor} = useMateriaContext();
   // Estados separados para cada sección
   const [conocimientos, setConocimientos] = useState<Conocimiento[]>([]);
   const [experiencias, setExperiencias] = useState<Experiencia[]>([]);
@@ -405,10 +405,10 @@ export default function PerfilTutor() {
                     <p className="font-bold">Materias de interes</p>
                 </div>
                 <div className="pl-4 mb-2 text-sm">
-                    {materias?.map((materia, index) => (
+                    {materiasTutor?.map((materia, index) => (
                         <p className="flex" key={index}>
                           <Dot/>
-                          {materia}
+                          {materia.materia}
                         </p>
                     ))}
                 </div>

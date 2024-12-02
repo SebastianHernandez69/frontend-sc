@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { userPayload } from '../interfaces/userPayload-int';
 import { jwtDecode } from 'jwt-decode';
 import RouteGuard from '@/components/routeGuard';
+import { toast } from 'react-toastify';
 
 type CompleteOfferCardProp = {
     offer: Offer;
@@ -65,7 +66,7 @@ const OfferCard: React.FC<CompleteOfferCardProp> = ({offer, idUsuarioPupilo}) =>
                 idPregunta: idPregunta
             }
 
-            const res = await fetch(`${apiUrl}/question/answere-question`,{
+            const res = await fetch(`${apiUrl}/user/answere-question`,{
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -78,6 +79,10 @@ const OfferCard: React.FC<CompleteOfferCardProp> = ({offer, idUsuarioPupilo}) =>
                 console.error(`Error al cambiar estado de la pregunta`);
             }
 
+            toast.success("Pregunta marcada como contestada", {
+                position: "top-right"
+            });
+            setIsOpen(false);
         } catch (error) {
             console.error(`Error al contestar la pregunta: ${error}`);
         }

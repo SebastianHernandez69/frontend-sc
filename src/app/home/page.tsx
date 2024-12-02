@@ -48,42 +48,52 @@ export default function HomePage(){
             socket.on('questionStateUpdate', handleChangeQuestionState);
         }
     
-        // Verificar el rol del usuario para unirse a salas específicas
-        let handleRoleSpecificNotification: (() => Promise<void>) | null = null;
-    
         if (userData) {
             if (userData.rol === 2) {
                 socket.emit('joinRoom', userData.sub);
     
-                handleRoleSpecificNotification = async () => {
-                    await fetchQuestions(userData.rol);
+                const handleNotification = async () => {
+                    try {
+                        console.log('nueva oferta o pregunta contestada');
+                        await fetchQuestions(userData.rol);
+                    } catch (error) {
+                        console.error('Error al manejar notificaciones:', error);
+                    }
                 };
     
                 if (!socket.hasListeners('newOfferNotification')) {
-                    socket.on('newOfferNotification', handleRoleSpecificNotification);
+                    socket.on('newOfferNotification', handleNotification);
+                }
+    
+                if (!socket.hasListeners('AnsQuestionNotification')) {
+                    socket.on('AnsQuestionNotification', handleNotification);
                 }
             } else if (userData.rol === 1) {
                 socket.emit('joinNewQuestion');
     
-                handleRoleSpecificNotification = async () => {
-                    await fetchQuestions(userData.rol);
+                const handleNotification = async () => {
+                    try {
+                        await fetchQuestions(userData.rol);
+                    } catch (error) {
+                        console.error('Error al manejar notificaciones:', error);
+                    }
                 };
     
                 if (!socket.hasListeners('newQuestionNotification')) {
-                    socket.on('newQuestionNotification', handleRoleSpecificNotification);
+                    socket.on('newQuestionNotification', handleNotification);
                 }
             }
         }
     
-        // Función de limpieza
         return () => {
             socket.off('questionStateUpdate', handleChangeQuestionState);
     
             if (userData) {
                 if (userData.rol === 2) {
-                    socket.off('newOfferNotification', handleRoleSpecificNotification!);
+                    socket.off('newOfferNotification');
+                    socket.off('AnsQuestionNotification');
                 } else if (userData.rol === 1) {
-                    socket.off('newQuestionNotification', handleRoleSpecificNotification!);
+                    socket.off('newQuestionNotification');
                 }
             }
         };
