@@ -8,6 +8,7 @@ import { DialogHeader } from "@/components/ui/dialog";
 import Carousel from "@/components/ui/carousel";
 import QuestionOffers from "./offers/questionOffers";
 import useDeleteQuestion from "../../hooks/useDeleteQuestion"; // Importar el hook
+import EditQuestion from "./editQuestion"; // Importar el nuevo componente EditQuestion
 
 interface QuestionCardDialogProps {
     question: Question;
@@ -18,6 +19,8 @@ interface QuestionCardDialogProps {
 const QuestionCardDialog: React.FC<QuestionCardDialogProps> = ({ question, userData, updateQuestions }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [isEditOpen, setIsEditOpen] = useState(false); // Estado para controlar la apertura de EditQuestion
+    const [questionData, setQuestionData] = useState<Question | null>(null); // Almacena los datos de la pregunta al hacer la petición GET
 
     // Usar el hook para la eliminación de la pregunta
     const { deleteQuestion, isDeleting } = useDeleteQuestion({
@@ -36,6 +39,20 @@ const QuestionCardDialog: React.FC<QuestionCardDialogProps> = ({ question, userD
             setIsOpen(false); // Cerrar el modal después de eliminar
         }
     };
+
+    const handleUpdate = async () => {
+        // Hacer la solicitud GET para obtener los datos actualizados de la pregunta
+        const response = await fetch(`http://localhost:3000/question/get/${question.idPregunta}`);
+        
+        if (response.ok) {
+            const data = await response.json();
+            setQuestionData(data); // Establecer los datos obtenidos
+            setIsEditOpen(true); // Abrir el componente de edición
+        } else {
+            alert("Hubo un error al obtener la pregunta");
+        }
+    };
+    
 
     // Verificar si el usuario es tutor (1) o pupilo (2)
     const isPupilo = userData?.rol === 2; // Si el rol es 2, es pupilo
@@ -117,10 +134,28 @@ const QuestionCardDialog: React.FC<QuestionCardDialogProps> = ({ question, userD
                                 </div>
                             </div>
                         )}
+
+                        {/* Botón de actualizar */}
+                        {isPupilo && question.estado !== "aceptada" && (
+                            <button
+                                onClick={handleUpdate} // Llamar a handleUpdate para obtener los datos
+                                className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition duration-200"
+                            >
+                                Actualizar
+                            </button>
+                        )}
                     </DialogContent>
                 </DialogPortal>
             </Dialog>
 
+            {/* Mostrar modal de edición si isEditOpen es true */}
+            {isEditOpen && questionData && (
+                <EditQuestion
+                    question={questionData}
+                    updateQuestions={updateQuestions}
+                    setIsOpen={setIsEditOpen} // Cierra el modal de edición sin afectar el modal principal
+                />
+            )}
         </>
     );
 };
