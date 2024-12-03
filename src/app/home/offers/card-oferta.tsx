@@ -66,7 +66,7 @@ const OfferCard: React.FC<CompleteOfferCardProp> = ({offer, idUsuarioPupilo}) =>
                 idPregunta: idPregunta
             }
 
-            const res = await fetch(`${apiUrl}/user/answere-question`,{
+            const res = await fetch(`${apiUrl}/question/answere-question`,{
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -82,7 +82,7 @@ const OfferCard: React.FC<CompleteOfferCardProp> = ({offer, idUsuarioPupilo}) =>
             toast.success("Pregunta marcada como contestada", {
                 position: "top-right"
             });
-            setIsOpen(false);
+            return;
         } catch (error) {
             console.error(`Error al contestar la pregunta: ${error}`);
         }
