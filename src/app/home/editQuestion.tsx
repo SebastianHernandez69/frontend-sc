@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog";
 import { DialogOverlay, DialogPortal } from "@radix-ui/react-dialog";
 import { DialogHeader } from "@/components/ui/dialog";
+import { toast } from 'react-toastify';
+
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const EditQuestion = ({ question, updateQuestions, setIsOpen }) => {
     const [editedQuestion, setEditedQuestion] = useState(question); // Almacenar la pregunta que se está editando
-    const [showSuccessDialog, setShowSuccessDialog] = useState(false); // Controlar la visibilidad del dialog de éxito
     const [showDeleteDialog, setShowDeleteDialog] = useState(false); // Controlar la visibilidad del dialog de eliminación
     const [currentImageIndex, setCurrentImageIndex] = useState(0); // Índice de la imagen actualmente visible
 
@@ -14,13 +16,13 @@ const EditQuestion = ({ question, updateQuestions, setIsOpen }) => {
         const imageToDelete = editedQuestion.imgpregunta[currentImageIndex]; // Obtener la imagen visible actualmente
         const idImg = imageToDelete.idImg; // Obtener el id de la imagen
 
-        const response = await fetch(`http://localhost:3000/question/img/delete/${idImg}`, {
+        const response = await fetch(`${apiUrl}/question/img/delete/${idImg}`, {
             method: 'DELETE',
         });
 
         if (response.ok) {
             // Eliminamos la imagen del estado de la pregunta
-            const updatedImages = editedQuestion.imgpregunta.filter((img, index) => index !== currentImageIndex);
+            const updatedImages = [...editedQuestion.imgpregunta.filter((img,index: number) => index !== currentImageIndex)];
 
             // Actualizamos el estado de la pregunta
             setEditedQuestion({
@@ -33,10 +35,14 @@ const EditQuestion = ({ question, updateQuestions, setIsOpen }) => {
                 setCurrentImageIndex(updatedImages.length - 1); // Si eliminamos la última imagen, ajustamos el índice
             }
 
-            // Mostramos el dialog de eliminación con el mensaje correspondiente
-            setShowDeleteDialog(true);
+            toast.success("Imagen eliminada", {
+                position: "top-right"
+            });
+            updateQuestions();
         } else {
-            alert("Hubo un error al eliminar la imagen");
+            toast.warning("No se pudo eliminar la imagen", {
+                position: "top-right"
+            });
         }
     };
 
@@ -52,7 +58,7 @@ const EditQuestion = ({ question, updateQuestions, setIsOpen }) => {
 
     // Función para guardar los cambios
     const handleSaveChanges = async () => {
-        const response = await fetch(`http://localhost:3000/question/update/${editedQuestion.idPregunta}`, {
+        const response = await fetch(`${apiUrl}/question/update/${editedQuestion.idPregunta}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -62,15 +68,24 @@ const EditQuestion = ({ question, updateQuestions, setIsOpen }) => {
 
         if (response.ok) {
             // Mostrar el dialog de éxito
-            setShowSuccessDialog(true);
-        } else {
+            toast.success("Pregunta actualizada con exito", {
+                position: "top-right"
+            });
+            handleCloseSuccessDialog();
+        } else if (response.status === 409){
+            toast.warning("Pregunta ya contesta o aceptada", {
+                position: "top-right"
+            });
+            handleCancel();
+        }
+         else {
             alert("Hubo un error al guardar los cambios");
         }
     };
 
     // Función para cerrar el dialog de éxito
     const handleCloseSuccessDialog = () => {
-        setShowSuccessDialog(false); // Cerrar el dialog de éxito
+        // setShowSuccessDialog(false);
         updateQuestions(); // Actualizar las preguntas
         setIsOpen(false); // Cerrar el modal de edición
     };
@@ -180,28 +195,6 @@ const EditQuestion = ({ question, updateQuestions, setIsOpen }) => {
                     </div>
                 </DialogContent>
             </DialogPortal>
-
-            {/* Dialog de éxito */}
-            {showSuccessDialog && (
-                <Dialog open={showSuccessDialog} onOpenChange={handleCloseSuccessDialog}>
-                    <DialogPortal>
-                        <DialogOverlay className="fixed inset-0 bg-black bg-opacity-50" />
-                        <DialogContent className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 max-w-[80vh] rounded-xl sm:max-w-2xl w-full">
-                            <DialogHeader>
-                                <DialogTitle className="font-bold text-center">¡Cambios guardados con éxito!</DialogTitle>
-                            </DialogHeader>
-                            <div className="mt-4 flex justify-center">
-                                <button
-                                    onClick={handleCloseSuccessDialog}
-                                    className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700"
-                                >
-                                    Aceptar
-                                </button>
-                            </div>
-                        </DialogContent>
-                    </DialogPortal>
-                </Dialog>
-            )}
 
             {/* Dialog de eliminación de imagen */}
             {showDeleteDialog && (
