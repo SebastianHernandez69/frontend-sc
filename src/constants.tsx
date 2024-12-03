@@ -15,7 +15,7 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
   },
   {
     title: 'Preguntas contestadas',
-    path: '/home/categorias',
+    path: '/home/answered-question',
     icon: <Icon icon="lucide:circle-check-big" width="24" height="24" />,
   },
   {

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useEffect, useState } from "react";
 import { Categoria, Materia, MateriaTutor } from "../../interfaces/categories";
@@ -15,57 +15,69 @@ export default function FormCategoriaMateria() {
     const [materias, setMaterias] = useState<Materia[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
     const [selectedMateria, setSelectedMateria] = useState<number | null>(null);
-    const {register, handleSubmit, reset} = useForm<MateriaTutor>();
-    const {addMateriaTutor} = useMateriaContext();
+    const { register, handleSubmit, reset } = useForm<MateriaTutor>();
+    const { addMateriaTutor, removeMateriaTutor, materiasTutor } = useMateriaContext();
 
     const alertAddMateriaSuccess = () => {
-        toast.success("Materia agregada con exito", {
+        toast.success("Materia agregada con éxito", {
             position: "top-right"
         });
-    }
+    };
 
     const alertExistMateria = () => {
-        toast.error("La materia ya esta en tu lista de interes", {
+        toast.error("La materia ya está en tu lista de interés", {
             position: "top-right"
         });
-    }
-    // Llenar las categorias
-    useEffect(()=>{
-        const fetchCategorias =async () => {
+    };
+
+    const alertDeleteMateriaSuccess = () => {
+        toast.success("Materia eliminada con éxito", {
+            position: "top-right"
+        });
+    };
+
+    const alertDeleteMateriaError = () => {
+        toast.error("Error al eliminar la materia", {
+            position: "top-right"
+        });
+    };
+
+    // Llenar las categorías
+    useEffect(() => {
+        const fetchCategorias = async () => {
             try {
                 const data: Categoria[] = await getCategories();
                 setCategories(data);
             } catch (error) {
-                console.error("Error al obtener categorias:", error);
+                console.error("Error al obtener categorías:", error);
             }
-        }
+        };
         fetchCategorias();
-    }, [])
+    }, []);
 
-    // Llenar las materias
+    // Llenar las materias según la categoría seleccionada
     useEffect(() => {
-        if(selectedCategory !== null){
+        if (selectedCategory !== null) {
             fetch(`${apiUrl}/categories/materia/${selectedCategory}`)
-                .then(response => response.json())
+                .then((response) => response.json())
                 .then((data: Materia[]) => setMaterias(data))
-                .catch(error => console.error('Error al cargar las materias:', error));
+                .catch((error) => console.error("Error al cargar las materias:", error));
         } else {
             setMaterias([]);
         }
-    },[selectedCategory]);
+    }, [selectedCategory]);
 
-    // Enviar el interes del tutor al servidor
-    const onSubmit:SubmitHandler<MateriaTutor> = async (data) => {
-
+    // Enviar el interés del tutor al servidor
+    const onSubmit: SubmitHandler<MateriaTutor> = async (data) => {
         const materiaInteres = {
-            "idMateria": data.idMateria   
-        }
+            idMateria: data.idMateria,
+        };
 
         const access_token = sessionStorage.getItem("access_token");
 
-        if(!access_token){
+        if (!access_token) {
             console.error("Token de autenticación no encontrado.");
-            return; 
+            return;
         }
 
         try {
@@ -73,17 +85,17 @@ export default function FormCategoriaMateria() {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${access_token}`
+                    Authorization: `Bearer ${access_token}`,
                 },
-                body: JSON.stringify(materiaInteres)
+                body: JSON.stringify(materiaInteres),
             });
 
-            if(res.status === 409){
+            if (res.status === 409) {
                 alertExistMateria();
                 return;
             }
 
-            if(!res.ok){
+            if (!res.ok) {
                 console.error(res.text());
             }
 
@@ -96,38 +108,71 @@ export default function FormCategoriaMateria() {
         } catch (error) {
             console.error("Error en la solicitud:", error);
         }
-    }
+    };
 
+    // Función para eliminar la materia
+    const handleDeleteMateria = async (idMateria: number) => {
+        const access_token = sessionStorage.getItem("access_token");
+
+        if (!access_token) {
+            console.error("Token de autenticación no encontrado.");
+            return;
+        }
+
+        try {
+            const res = await fetch(`${apiUrl}/materia/interes-tutor/delete`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${access_token}`,
+                },
+                body: JSON.stringify({ idMateria }),
+            });
+
+            if (!res.ok) {
+                alertDeleteMateriaError();
+                return;
+            }
+
+            // Si la eliminación fue exitosa, actualizamos el contexto o el estado
+            removeMateriaTutor(idMateria);
+            alertDeleteMateriaSuccess();
+        } catch (error) {
+            console.error("Error al eliminar la materia:", error);
+            alertDeleteMateriaError();
+        }
+    };
+
+    // Resetear los valores seleccionados
     const handleReset = () => {
         setSelectedCategory(null);
         setSelectedMateria(null);
-    }
+    };
 
-    return(
+    return (
         <>
             <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto bg-white p-6 rounded-lg space-y-4">
                 <div className="flex flex-col space-y-2">
                     <label htmlFor="categorySelect" className="text-gray-700 font-medium">
-                        Seleccione una categoria
+                        Seleccione una categoría
                     </label>
 
-                    <select 
+                    <select
                         id="cbCategories"
                         className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={selectedCategory ?? ''}
+                        value={selectedCategory ?? ""}
                         onChange={(e) => setSelectedCategory(Number(e.target.value) || null)}
                     >
-                        {
-                            categories.map(category => (
-                                <option value={category.idCategoria} key={category.idCategoria}>
-                                    {category.categoria}
-                                </option>
-                            ))
-                        }
+                        <option value="">Seleccionar categoría</option>
+                        {categories.map((category) => (
+                            <option value={category.idCategoria} key={category.idCategoria}>
+                                {category.categoria}
+                            </option>
+                        ))}
                     </select>
                 </div>
 
-                {/* Materia */}
+                {/* Selección de materia */}
                 <div className="flex flex-col space-y-2">
                     <label htmlFor="materiaSelect" className="text-gray-700 font-medium">
                         Selecciona una materia:
@@ -136,27 +181,47 @@ export default function FormCategoriaMateria() {
                     <select
                         id="MateriaSelect"
                         className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={selectedMateria ?? ''}
+                        value={selectedMateria ?? ""}
                         disabled={!selectedCategory}
                         {...register("idMateria", {
                             required: true,
                             onChange: (e) => {
                                 const value = Number(e.target.value) || null;
-                                setSelectedMateria(value); 
-                            }
+                                setSelectedMateria(value);
+                            },
                         })}
                     >
-                        {
-                            materias.map(materia => (
-                                <option key={materia.idMateria + 100} value={materia.idMateria}>
-                                    {materia.materia}
-                                </option>
-                            ))
-                        }
+                        <option value="">Seleccionar materia</option>
+                        {materias.map((materia) => (
+                            <option key={materia.idMateria + 100} value={materia.idMateria}>
+                                {materia.materia}
+                            </option>
+                        ))}
                     </select>
                 </div>
+
                 <Button type={"submit"}>Enviar</Button>
             </form>
+
+            {/* Mostrar las materias seleccionadas para eliminar */}
+            {materiasTutor.length > 0 && (
+                <div className="mt-6">
+                    <h3 className="text-xl font-bold">Mis Materias Seleccionadas</h3>
+                    <ul className="space-y-4">
+                        {materiasTutor.map((materia) => (
+                            <li key={materia.idMateria} className="flex justify-between items-center">
+                                <span>{materia.materia}</span>
+                                <Button
+                                    onClick={() => handleDeleteMateria(materia.idMateria)}
+                                    className="bg-red-500 text-white px-4 py-2 rounded-md"
+                                >
+                                    Eliminar
+                                </Button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
         </>
-    )    
+    );
 }
