@@ -67,11 +67,11 @@ const GuestContent = () => {
   if (!profileData) return <div>Loading...</div>;
 
   return (
-    <Card>
+    <Card className="">
       <CardHeader>
         <CardTitle className="text-xl font-bold">Perfil del tutor</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col space-y-4">
+      <CardContent className="flex flex-col space-y-4 ">
         <div className="sm:grid grid-cols-1 sm:grid-cols-5 gap-2 lg:gap-4 w-full">
           <div className="shadow col-start-1 col-end-3 rounded min-h-[25vh] sm:min-h-[40vh]">
             <div className="flex justify-center sm:mt-6">
@@ -88,7 +88,7 @@ const GuestContent = () => {
             </div>
           </div>
 
-          <div className="col-start-3 col-end-6 h-full rounded py-3 mt-4 sm:mt-0 flex items-center justify-center shadow">
+          <div className="col-start-3 col-end-6 h-auto rounded py-3 mt-4 sm:mt-0 flex items-center justify-center shadow">
             <div className="flex flex-col space-y-2 sm:space-y-5 text-sm">
               <div className="flex mx-3 w-auto">
                 <p>Nombre: </p>
@@ -109,10 +109,29 @@ const GuestContent = () => {
             </div>
           </div>
         </div>
-        <div className="grid gap-3 md:grid-cols-3 sm:gap-2 lg:gap-4 w-full h-[30vh]">
+        <div className="grid gap-3 md:grid-cols-3 sm:gap-2 lg:gap-4 w-full">
           <div className="h-full shadow rounded">
             <div className="w-auto ml-2 mt-2 lg:ml-4">
               <p className="font-bold">Experiencia</p>
+            </div>
+            <div>
+              {profileData.experiencia?.map((experiencia) => (
+                <div key={experiencia.idExperiencia} className="mb-3 flex justify-center">
+                  <div className="w-3/4 bg-white-100 p-4 rounded-lg border border-gray-200 shadow-sm">
+                    <p className="font-medium text-sm text-black-800">
+                      <span className="font-bold">{experiencia.empresa}</span>
+                      <span> - {experiencia.puesto.puesto}</span>
+                    </p>
+                    <p className="text-sm text-gray-600 mt-2">{experiencia.descripcion}</p>
+                    <p className="text-xs text-black-500 mt-2">
+                      {new Date(experiencia.fechaInicio).toLocaleDateString()} -{" "}
+                      {experiencia.fechaFin
+                        ? new Date(experiencia.fechaFin).toLocaleDateString()
+                        : "Actualmente"}
+                    </p>
+                  </div>
+              </div>
+              ))}
             </div>
           </div>
           <div className="shadow rounded">
@@ -131,6 +150,19 @@ const GuestContent = () => {
             <div className="w-auto ml-2 mt-2 lg:ml-4">
               <p className="font-bold">Conocimientos</p>
             </div>
+            {profileData.conocimiento?.map((conocimiento) => (
+                <div key={conocimiento.idConocimiento} className="mb-3 flex justify-center">
+                  <div className="w-3/4 bg-white-100 p-4 rounded-lg border border-gray-200 shadow-sm">
+                    <p className="font-medium text-sm text-black-800">
+                      <span>{conocimiento.tituloAcademico}</span>
+                      <span className="font-bold">, {conocimiento.institucion.institucion}</span>
+                    </p>
+                    <p className="text-xs text-gray-500 mt-2">
+                      {new Date(conocimiento.fechaEgreso).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+            ))}
           </div>
         </div>
       </CardContent>
