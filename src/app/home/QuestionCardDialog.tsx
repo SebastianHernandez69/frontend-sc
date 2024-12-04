@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Question } from "./interfaces/question-interface";
 import { userPayload } from "./interfaces/userPayload-int";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +9,7 @@ import Carousel from "@/components/ui/carousel";
 import QuestionOffers from "./offers/questionOffers";
 import useDeleteQuestion from "../../hooks/useDeleteQuestion"; // Importar el hook
 import EditQuestion from "./editQuestion"; // Importar el nuevo componente EditQuestion
+import { Button } from '@/components/ui/button';
 
 interface QuestionCardDialogProps {
     question: Question;
@@ -54,8 +55,11 @@ const QuestionCardDialog: React.FC<QuestionCardDialogProps> = ({ question, userD
     };
     
 
-    // Verificar si el usuario es tutor (1) o pupilo (2)
-    const isPupilo = userData?.rol === 2; // Si el rol es 2, es pupilo
+    useEffect(() => {
+        if(question){
+            console.log('Pregunta ', question)
+        }
+    })
 
     return (
         <>
@@ -105,7 +109,7 @@ const QuestionCardDialog: React.FC<QuestionCardDialogProps> = ({ question, userD
                         <QuestionOffers userData={userData} selectedQuestion={question} updateQuestions={updateQuestions} />
 
                         {/* Botón de eliminar solo si el usuario es pupilo y la pregunta no está aceptada */}
-                        {isPupilo && question.estado !== "aceptada" && (
+                        {userData?.rol === 2 && question.idEstadoPregunta === 1 && (
                             <button
                                 onClick={() => setShowDeleteConfirm(true)} // Muestra la confirmación
                                 className="mt-4 bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transition duration-200"
@@ -136,13 +140,13 @@ const QuestionCardDialog: React.FC<QuestionCardDialogProps> = ({ question, userD
                         )}
 
                         {/* Botón de actualizar */}
-                        {isPupilo && question.estado !== "aceptada" && (
-                            <button
+                        {userData?.rol === 2 && question.idEstadoPregunta === 1 && (
+                            <Button
                                 onClick={handleUpdate} // Llamar a handleUpdate para obtener los datos
                                 className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition duration-200"
                             >
                                 Actualizar
-                            </button>
+                            </Button>
                         )}
                     </DialogContent>
                 </DialogPortal>
