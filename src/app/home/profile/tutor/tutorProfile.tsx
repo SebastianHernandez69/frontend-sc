@@ -281,18 +281,30 @@ export default function PerfilTutor() {
 
     </div>
       <div className="grid gap-3 md:grid-cols-3 sm:gap-2 mt-5 lg:gap-4 w-full min-h-[30vh]">
-            <div className=" h-full bg-white shadow-md rounded">
-                <div className="w-auto ml-2 mt-2 lg:ml-4">
-                    <p className="font-bold">Experiencia</p>
-                </div>
-                <div>
-                    {experiencias?.map((experiencia) => (
-                      <p key={experiencia.idExperiencia}>
-                        {experiencia.empresa}
-                      </p>
-                    ))}
-                </div>
+      <div className="h-full bg-white shadow-md rounded">
+        <div className="w-auto ml-2 mt-2 lg:ml-4">
+          <p className="font-bold">Experiencia</p>
+        </div>
+        <div className="mt-4">
+          {experiencias?.map((experiencia) => (
+            <div key={experiencia.idExperiencia} className="mb-3 flex justify-center">
+              <div className="w-3/4 bg-white-100 p-4 rounded-lg border border-gray-200 shadow-sm">
+                <p className="font-medium text-sm text-black-800">
+                  <span className="font-bold">{experiencia.empresa}</span>
+                  <span> - {experiencia.puesto}</span>
+                </p>
+                <p className="text-sm text-gray-600 mt-2">{experiencia.descripcion}</p>
+                <p className="text-xs text-black-500 mt-2">
+                  {new Date(experiencia.fechaInicio).toLocaleDateString()} -{" "}
+                  {experiencia.fechaFin
+                    ? new Date(experiencia.fechaFin).toLocaleDateString()
+                    : "Actualmente"}
+                </p>
+              </div>
             </div>
+          ))}
+        </div>
+      </div>
             <div className="shadow-md bg-white rounded">
                 <div className="w-auto ml-2 mt-2 lg:ml-4">
                     <p className="font-bold">Materias de interes</p>
@@ -307,14 +319,24 @@ export default function PerfilTutor() {
                 </div>
             </div>
             <div className="h-full bg-white shadow-md rounded">
-                <div className="w-auto ml-2 mt-2 lg:ml-4">
-                    <p className="font-bold">Conocimientos</p>
-                </div>
-                <div>
-                  {conocimientos?.map((conocimiento) => (
-                    <p key={conocimiento.idConocimiento}>{conocimiento.institucion}</p>
-                  ))}
-                </div>
+              <div className="w-auto ml-2 mt-2 lg:ml-4">
+                <p className="font-bold">Conocimientos</p>
+              </div>
+              <div className="mt-4">
+                {conocimientos?.map((conocimiento) => (
+                  <div key={conocimiento.idConocimiento} className="mb-3 flex justify-center">
+                    <div className="w-3/4 bg-white-100 p-4 rounded-lg border border-gray-200 shadow-sm">
+                      <p className="font-medium text-sm text-black-800">
+                        <span>{conocimiento.tituloAcademico}</span>
+                        <span className="font-bold">, {conocimiento.institucion}</span>
+                      </p>
+                      <p className="text-xs text-gray-500 mt-2">
+                        {new Date(conocimiento.fechaEgreso).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
         </div>
       </>

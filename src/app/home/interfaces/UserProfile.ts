@@ -1,3 +1,4 @@
+
 export interface UserProfile {
     idUsuario?:number;
     nombre: {
@@ -19,8 +20,30 @@ export interface UserProfile {
         idRol: number;
         rol: string;
     };
-    experiencia?: [];
-    conocimiento?: [];
+    experiencia?: {
+        idExperiencia: number;
+        idUsuario: number;
+        idPuesto: number;
+        empresa: string;
+        fechaInicio: Date;
+        fechaFin: Date;
+        descripcion: string;
+        puesto: {
+            idPuesto: number,
+            puesto: string
+        }
+    } [];
+    conocimiento?: {
+        idConocimiento: number;
+        idUsuario: number;
+        idInstitucion: number;
+        tituloAcademico: string;
+        fechaEgreso: Date;
+        institucion: {
+            idInstitucion: number;
+            institucion: string;
+        }  
+    }[];
     materia_tutor?:{
         materia: {
             idMateria: number;

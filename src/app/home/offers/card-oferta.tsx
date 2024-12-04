@@ -82,6 +82,7 @@ const OfferCard: React.FC<CompleteOfferCardProp> = ({offer, idUsuarioPupilo}) =>
             toast.success("Pregunta marcada como contestada", {
                 position: "top-right"
             });
+            setIsOpen(false);
             return;
         } catch (error) {
             console.error(`Error al contestar la pregunta: ${error}`);
