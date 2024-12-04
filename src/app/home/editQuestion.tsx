@@ -99,6 +99,7 @@ const EditQuestion = ({ question, updateQuestions, setIsOpen }) => {
         if (response.ok) {
             const updatedImages = [...editedQuestion.imgpregunta.filter((img, index) => index !== currentImageIndex)];
 
+
             setEditedQuestion({
                 ...editedQuestion,
                 imgpregunta: updatedImages,
@@ -112,6 +113,7 @@ const EditQuestion = ({ question, updateQuestions, setIsOpen }) => {
                 position: "top-right"
             });
             updateQuestions(); // Actualizar preguntas en el padre
+
         } else {
             toast.warning("No se pudo eliminar la imagen", {
                 position: "top-right"

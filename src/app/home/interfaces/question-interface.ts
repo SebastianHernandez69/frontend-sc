@@ -54,5 +54,18 @@ export interface Question {
     };
     imgpregunta: Array<{ img: string }>;
     estado: "pendiente" | "aceptada" | "contestada";  // Agregar esta línea para que 'estado' sea una propiedad válida
-  }
+}
+
+export interface AnsweredQuestion{
+    titulo: string;
+    descripcion: string;
+    materia: string;
+    nombre: {
+        primerNombre: string;
+        segundoNombre: string;
+        primerApellido: string;
+        segundoApellido: string;
+    };
+    fechaContestada: Date;
+}
   
