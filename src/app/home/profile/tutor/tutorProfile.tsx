@@ -5,13 +5,15 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { Dot } from "lucide-react";
-import FormCategoriaMateria from "./formCategoriaInteres";
+import FormCategoriaMateria from "./components/formCategoriaInteres";
 import { useUserContext } from "@/context/UserContext";
 import { useMateriaContext } from "@/context/MateriaTutorContext";
 import Comments from "@/components/comments";
 import { userPayload } from "../../interfaces/userPayload-int";
 import { jwtDecode } from "jwt-decode";
 import Valoration from "@/components/valorationStars";
+import { useExperienceContext } from "@/context/ExperienciaContext";
+import FormConocimiento from "./components/formConocimiento";
 
 interface PerfilTutor {
   primerNombre?: string;
@@ -21,13 +23,6 @@ interface PerfilTutor {
   correo?: string;
   edad?: number;
   foto?: File | null;
-}
-
-interface Conocimiento {
-  institucion: string;
-  tituloAcademico: string;
-  fechaEgreso: string;
-  descripcion: string;
 }
 
 interface Experiencia {
@@ -49,12 +44,12 @@ export default function PerfilTutor() {
   const [token, setToken] = useState<string | null>(null);
   const [esEditable, setEsEditable] = useState(false);
   const [userData, setUserData] = useState<userPayload | null>(null);
-
+  const {conocimientos} = useExperienceContext();
   // contexto de usuario
   const {user, updateProfilePhoto} = useUserContext();
   const {materiasTutor} = useMateriaContext();
   // Estados separados para cada sección
-  const [conocimientos, setConocimientos] = useState<Conocimiento[]>([]);
+  // const [conocimientos, setConocimientos] = useState<Conocimiento[]>([]);
   const [experiencias, setExperiencias] = useState<Experiencia[]>([]);
 
   useEffect(() => {
@@ -136,10 +131,6 @@ export default function PerfilTutor() {
     }
   };
 
-
-  const agregarConocimiento = (conocimiento: Conocimiento) => {
-    setConocimientos((prev) => [...prev, conocimiento]);
-  };
 
   const agregarExperiencia = (experiencia: Experiencia) => {
     setExperiencias((prev) => [...prev, experiencia]);
@@ -293,49 +284,7 @@ export default function PerfilTutor() {
         ) : pestañaActiva === "conocimientos" ? (
           <div className="space-y-4">
             {/* Conocimientos */}
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                const form = e.target as HTMLFormElement;
-                const conocimiento = {
-                  institucion: (form.institucion as HTMLInputElement).value,
-                  tituloAcademico: (form.tituloAcademico as HTMLInputElement).value,
-                  fechaEgreso: (form.fechaEgreso as HTMLInputElement).value,
-                  descripcion: (form.descripcion as HTMLInputElement).value,
-                };
-                agregarConocimiento(conocimiento);
-              }}
-              className="space-y-4"
-            >
-              {/* Campos para Conocimientos */}
-              <div className="flex flex-col space-y-2">
-                <label className="text-gray-700 font-medium">Institución:</label>
-                <Input name="institucion" className="my-2" placeholder="Nombre de la Institución" />
-              </div>
-              <div className="flex flex-col space-y-2">
-                <label className="text-gray-700 font-medium">Título Académico:</label>
-                <Input name="tituloAcademico" className="my-2" placeholder="Título Académico" />
-              </div>
-              <div className="flex flex-col space-y-2">
-                <label className="text-gray-700 font-medium">Fecha de Egreso:</label>
-                <Input name="fechaEgreso" className="my-2" type="date" />
-              </div>
-              <div className="flex flex-col space-y-2">
-                <label className="text-gray-700 font-medium">Descripción:</label>
-                <Input name="descripcion" className="my-2" placeholder="Descripción" />
-              </div>
-              <Button type="submit">Guardar Conocimientos</Button>
-            </form>
-
-            {/* Mostrar los conocimientos guardados */}
-            {conocimientos.map((conocimiento, index) => (
-              <div key={index} className="bg-gray-100 p-2 rounded">
-                <p className="font-medium">{conocimiento.institucion}</p>
-                <p>{conocimiento.tituloAcademico}</p>
-                <p className="text-sm text-gray-600">{conocimiento.fechaEgreso}</p>
-                <p className="text-sm text-gray-600">{conocimiento.descripcion}</p>
-              </div>
-            ))}
+            <FormConocimiento />
           </div>
         ) : (
           <div className="space-y-4">
@@ -416,6 +365,11 @@ export default function PerfilTutor() {
             <div className="h-full bg-white shadow-md rounded">
                 <div className="w-auto ml-2 mt-2 lg:ml-4">
                     <p className="font-bold">Conocimientos</p>
+                </div>
+                <div>
+                  {conocimientos.map((conocimiento) => (
+                    <p key={conocimiento.idConocimiento}>{conocimiento.institucion}</p>
+                  ))}
                 </div>
             </div>
         </div>
