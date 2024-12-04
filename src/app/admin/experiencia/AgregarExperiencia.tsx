@@ -1,18 +1,9 @@
 "use client";
 
+import { Institucion, Puesto } from "@/app/home/interfaces/institucion";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 
-
-interface Institucion {
-  idInstitucion: number;
-  institucion: string;
-}
-
-interface Puesto {
-  idPuesto: number;
-  puesto: string;
-}
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Categoria, Materia, MateriaTutor } from "../../interfaces/categories";
-import { getCategories } from "../../home.api";
+import { Categoria, Materia, MateriaTutor } from "../../../interfaces/categories";
+import { getCategories } from "../../../home.api";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
@@ -200,7 +200,7 @@ export default function FormCategoriaMateria() {
                     </select>
                 </div>
 
-                <Button type={"submit"}>Enviar</Button>
+                <Button type={"submit"}>Agregar materia</Button>
             </form>
 
             {/* Mostrar las materias seleccionadas para eliminar */}

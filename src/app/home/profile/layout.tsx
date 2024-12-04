@@ -1,3 +1,4 @@
+import { ExperienceProvider } from "@/context/ExperienciaContext";
 import { MateriaProvider } from "@/context/MateriaTutorContext";
 import React from "react";
 
@@ -8,11 +9,13 @@ export default function ProfileLayout({
 }) {
     return (
         <>
-            <MateriaProvider>
-                <main>
-                    {children}
-                </main>
-            </MateriaProvider>  
+            <ExperienceProvider>
+                <MateriaProvider>
+                    <main>
+                        {children}
+                    </main>
+                </MateriaProvider>  
+            </ExperienceProvider>
         </>
     )
 }
