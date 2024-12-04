@@ -17,6 +17,8 @@ interface QuestionCardDialogProps {
     updateQuestions: () => Promise<void>;
 }
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
 const QuestionCardDialog: React.FC<QuestionCardDialogProps> = ({ question, userData, updateQuestions }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -43,8 +45,12 @@ const QuestionCardDialog: React.FC<QuestionCardDialogProps> = ({ question, userD
 
     const handleUpdate = async () => {
         // Hacer la solicitud GET para obtener los datos actualizados de la pregunta
-        const response = await fetch(`http://localhost:3000/question/get/${question.idPregunta}`);
+        const response = await fetch(`${apiUrl}/question/get/${question.idPregunta}`);
         
+        if(!response.ok){
+            console.error(`Error al obtener la pregunta: ${response.status}`);
+        }
+
         if (response.ok) {
             const data = await response.json();
             setQuestionData(data); // Establecer los datos obtenidos
