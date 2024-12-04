@@ -20,3 +20,11 @@ export interface ConocimientoForm{
     tituloAcademico: string;
     fechaEgreso: Date;
 }
+
+export interface ExperienceForm{
+    idPuesto: string;
+    empresa: string;
+    fechaInicio: Date;
+    fechaFin: Date;
+    descripcion: string;
+}
