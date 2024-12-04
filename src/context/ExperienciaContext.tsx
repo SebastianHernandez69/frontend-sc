@@ -9,6 +9,7 @@ interface ExperienciaContextType{
     conocimientos: Conocimiento[] | null;
     loading: boolean;
     addConocimientoTutor: (newConocimiento: Conocimiento) => void;
+    addExperienciaTutor: (newExperiencia: Experience) => void;
 }
 
 const ExperienciaContext = createContext<ExperienciaContextType | undefined>(undefined);
@@ -18,7 +19,7 @@ interface ExperienceProviderProps{
 }
 
 export const ExperienceProvider = ({children}: ExperienceProviderProps) => {
-    const { experiencias, conocimientos, loading, setConocimientos } = useExperience();
+    const { experiencias, conocimientos, loading, setConocimientos, setExperiencias } = useExperience();
 
     // aagregar conocimiento
     const addConocimientoTutor = (newConocimiento: Conocimiento) => {
@@ -27,9 +28,15 @@ export const ExperienceProvider = ({children}: ExperienceProviderProps) => {
         }
     }
 
+    const addExperienciaTutor = (newExperiencia: Experience) => {
+        if(experiencias){
+            setExperiencias([...experiencias, newExperiencia])
+        }
+    }
+
     return (
         <>
-            <ExperienciaContext.Provider value={{experiencias, conocimientos, loading, addConocimientoTutor}}>
+            <ExperienciaContext.Provider value={{experiencias, conocimientos, loading, addConocimientoTutor, addExperienciaTutor}}>
                 {children}
             </ExperienciaContext.Provider>
         </>

@@ -14,6 +14,7 @@ import { jwtDecode } from "jwt-decode";
 import Valoration from "@/components/valorationStars";
 import { useExperienceContext } from "@/context/ExperienciaContext";
 import FormConocimiento from "./components/formConocimiento";
+import FormExperiencia from "./components/formExperiencia";
 
 interface PerfilTutor {
   primerNombre?: string;
@@ -23,14 +24,6 @@ interface PerfilTutor {
   correo?: string;
   edad?: number;
   foto?: File | null;
-}
-
-interface Experiencia {
-  puesto: string;
-  empresa: string;
-  fechaInicio: string;
-  fechaFin: string;
-  descripcion: string;
 }
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -44,13 +37,10 @@ export default function PerfilTutor() {
   const [token, setToken] = useState<string | null>(null);
   const [esEditable, setEsEditable] = useState(false);
   const [userData, setUserData] = useState<userPayload | null>(null);
-  const {conocimientos} = useExperienceContext();
   // contexto de usuario
   const {user, updateProfilePhoto} = useUserContext();
+  const {conocimientos, experiencias} = useExperienceContext();
   const {materiasTutor} = useMateriaContext();
-  // Estados separados para cada sección
-  // const [conocimientos, setConocimientos] = useState<Conocimiento[]>([]);
-  const [experiencias, setExperiencias] = useState<Experiencia[]>([]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -129,11 +119,6 @@ export default function PerfilTutor() {
     } catch (error) {
       console.error("Error al actualizar el perfil:", error);
     }
-  };
-
-
-  const agregarExperiencia = (experiencia: Experiencia) => {
-    setExperiencias((prev) => [...prev, experiencia]);
   };
 
   const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -288,55 +273,7 @@ export default function PerfilTutor() {
           </div>
         ) : (
           <div className="space-y-4">
-            {/* Experiencia */}
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                const form = e.target as HTMLFormElement;
-                const experiencia = {
-                  puesto: (form.puesto as HTMLInputElement).value,
-                  empresa: (form.empresa as HTMLInputElement).value,
-                  fechaInicio: (form.fechaInicio as HTMLInputElement).value,
-                  fechaFin: (form.fechaFin as HTMLInputElement).value,
-                  descripcion: (form.descripcion as HTMLInputElement).value,
-                };
-                agregarExperiencia(experiencia);
-              }}
-              className="space-y-4"
-            >
-              {/* Campos para Experiencia */}
-              <div className="flex flex-col space-y-2">
-                <label className="text-gray-700 font-medium">Puesto:</label>
-                <Input name="puesto" className="my-2" placeholder="Nombre del Puesto" />
-              </div>
-              <div className="flex flex-col space-y-2">
-                <label className="text-gray-700 font-medium">Empresa:</label>
-                <Input name="empresa" className="my-2" placeholder="Nombre de la Empresa" />
-              </div>
-              <div className="flex flex-col space-y-2">
-                <label className="text-gray-700 font-medium">Fecha de Inicio:</label>
-                <Input name="fechaInicio" className="my-2" type="date" />
-              </div>
-              <div className="flex flex-col space-y-2">
-                <label className="text-gray-700 font-medium">Fecha de Finalización:</label>
-                <Input name="fechaFin" className="my-2" type="date" />
-              </div>
-              <div className="flex flex-col space-y-2">
-                <label className="text-gray-700 font-medium">Descripción:</label>
-                <Input name="descripcion" className="my-2" placeholder="Descripción" />
-              </div>
-              <Button type="submit">Guardar Experiencia</Button>
-            </form>
-
-            {/* Mostrar las experiencias guardadas */}
-            {experiencias.map((experiencia, index) => (
-              <div key={index} className="bg-gray-100 p-2 rounded">
-                <p className="font-medium">{experiencia.puesto}</p>
-                <p>{experiencia.empresa}</p>
-                <p className="text-sm text-gray-600">{experiencia.fechaInicio} - {experiencia.fechaFin}</p>
-                <p className="text-sm text-gray-600">{experiencia.descripcion}</p>
-              </div>
-            ))}
+              <FormExperiencia/>
           </div>
         )}
       </div>
@@ -347,6 +284,13 @@ export default function PerfilTutor() {
             <div className=" h-full bg-white shadow-md rounded">
                 <div className="w-auto ml-2 mt-2 lg:ml-4">
                     <p className="font-bold">Experiencia</p>
+                </div>
+                <div>
+                    {experiencias?.map((experiencia) => (
+                      <p key={experiencia.idExperiencia}>
+                        {experiencia.empresa}
+                      </p>
+                    ))}
                 </div>
             </div>
             <div className="shadow-md bg-white rounded">
@@ -367,7 +311,7 @@ export default function PerfilTutor() {
                     <p className="font-bold">Conocimientos</p>
                 </div>
                 <div>
-                  {conocimientos.map((conocimiento) => (
+                  {conocimientos?.map((conocimiento) => (
                     <p key={conocimiento.idConocimiento}>{conocimiento.institucion}</p>
                   ))}
                 </div>

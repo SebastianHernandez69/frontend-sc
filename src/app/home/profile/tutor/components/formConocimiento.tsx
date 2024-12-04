@@ -99,7 +99,7 @@ export default function FormConocimiento(){
         <>
             <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto bg-white p-6 rounded-lg space-y-4">
                 <div className="flex flex-col space-y-2">
-                    <label htmlFor="categorySelect" className="text-gray-700 font-medium">
+                    <label htmlFor="conocimientoSelect" className="text-gray-700 font-medium">
                         Seleccione una institucion
                     </label>
                     <select
